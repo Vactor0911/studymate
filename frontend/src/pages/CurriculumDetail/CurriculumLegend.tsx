@@ -40,28 +40,10 @@ const CurriculumLegend = () => {
           <Typography variant="caption">학습 내용</Typography>
         </Stack>
 
-        {/* 자격증 */}
-        <Stack direction="row" gap={1} alignItems="center">
-          <Box
-            width="30px"
-            height="15px"
-            bgcolor={theme.palette.secondary.light}
-            border="2px solid black"
-            borderRadius={1}
-          />
-          <Typography variant="caption">자격증</Typography>
-        </Stack>
-
         {/* 정규 학습 과정 */}
         <Stack direction="row" gap={1} alignItems="center">
           <Box width="30px" border="2px solid #b1b1b7" borderRadius={1} />
-          <Typography variant="caption">정규 과정</Typography>
-        </Stack>
-
-        {/* 선택 학습 과정 */}
-        <Stack direction="row" gap={1} alignItems="center">
-          <Box width="30px" border="2px dashed #b1b1b7" borderRadius={1} />
-          <Typography variant="caption">선택 학습 과정</Typography>
+          <Typography variant="caption">학습 과정</Typography>
         </Stack>
       </Stack>
     </Paper>

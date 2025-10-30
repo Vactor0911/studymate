@@ -1,6 +1,13 @@
-import { Box, ButtonBase, Stack, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  ButtonBase,
+  Stack,
+  Typography,
+  useTheme,
+  type ButtonBaseProps,
+} from "@mui/material";
 
-interface CurriculumItemProps {
+interface CurriculumItemProps extends ButtonBaseProps {
   createdAt: string;
   subject: string;
   grade: string;
@@ -9,7 +16,7 @@ interface CurriculumItemProps {
 }
 
 const CurriculumItem = (props: CurriculumItemProps) => {
-  const { createdAt, subject, grade, detail, color } = props;
+  const { createdAt, subject, grade, detail, color, ...others } = props;
 
   const theme = useTheme();
 
@@ -19,6 +26,7 @@ const CurriculumItem = (props: CurriculumItemProps) => {
         borderRadius: 3,
         overflow: "hidden",
       }}
+      {...others}
     >
       <Stack
         direction="row"

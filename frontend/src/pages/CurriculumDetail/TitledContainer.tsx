@@ -4,6 +4,7 @@ import {
   Paper,
   Stack,
   Typography,
+  useTheme,
   type PaperProps,
 } from "@mui/material";
 
@@ -16,6 +17,8 @@ interface TitledContainerProps extends PaperProps {
 
 const TitledContainer = (props: TitledContainerProps) => {
   const { title, children, sx, collapsed, toggleButton, ...others } = props;
+
+  const theme = useTheme();
 
   return (
     <Paper
@@ -42,7 +45,12 @@ const TitledContainer = (props: TitledContainerProps) => {
         </Stack>
 
         {/* 구분선 */}
-        <Divider />
+        <Divider
+          sx={{
+            borderWidth: "1px",
+            borderColor: theme.palette.secondary.light,
+          }}
+        />
 
         {/* 내용 */}
         {!collapsed && (
