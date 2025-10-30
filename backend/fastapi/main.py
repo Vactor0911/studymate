@@ -1,9 +1,16 @@
 from __future__ import annotations
 
+import json
 import logging
 import os
 import re
+import sys
+from pathlib import Path
 from typing import Iterable, List, Sequence
+
+SRC_PATH = Path(__file__).resolve().parent / "src"
+if str(SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(SRC_PATH))
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
