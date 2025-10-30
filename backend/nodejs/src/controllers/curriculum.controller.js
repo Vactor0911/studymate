@@ -29,8 +29,8 @@ class CurriculumController {
     static async getRoadMap(req, res) {
         try {
             const userId = 1;
-            const roadmapUuid = req.params.roadmapUuid;
-            const roadMap = await CurriculumService.getRoadMap(roadmapUuid, userId);
+            const curriculumUuid = req.params.curriculumUuid;
+            const roadMap = await CurriculumService.getRoadMap(curriculumUuid, userId);
             res.status(200).json(roadMap);
         }
         catch (error) {

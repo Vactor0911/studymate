@@ -31,7 +31,10 @@ class CurriculumService {
     static async getRoadMaps(userId) {
         try {
             const result = await CurriculumModel.getRoadMaps(userId);
-            return result;
+            return result.map(row => ({
+                ...row,
+                curriculum: JSON.parse(row.curriculum)  // 문자열 → 객체
+            }));
         }
         catch (error) {
             throw new Error(`로드맵 조회 중 오류가 발생했습니다: ${error.message}`);
@@ -43,10 +46,13 @@ class CurriculumService {
      * @param {BigInt} userId - 사용자 ID
      * @returns {Json} 로드맵 JSON 데이터
      */
-    static async getRoadMap(roadmapUuid, userId) {
+    static async getRoadMap(curriculumUuid, userId) {
         try {
-            const rows = await CurriculumModel.getRoadMap(roadmapUuid, userId);
-            return rows;
+            const rows = await CurriculumModel.getRoadMap(curriculumUuid, userId);
+            return rows.map(row => ({
+                ...row,
+                curriculum: JSON.parse(row.curriculum)
+            }));
         }
         catch (error) {
             throw new Error(`로드맵 조회 중 오류가 발생했습니다: ${error.message}`);

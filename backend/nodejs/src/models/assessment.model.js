@@ -12,10 +12,10 @@ class AssessmentModel {
         return { problemUuid };
     }
     // RoadMap과 UUID로 문제를 조회합니다.
-    static async findByRoadmapAndUuid(roadmapId, roadmapUuid) {
+    static async findByRoadmapAndUuid(roadmapId, assessmentUuid) {
             const rows = await dbPool.execute(
                 "SELECT id, assessment FROM assessment WHERE curriculum_id = ? AND uuid = ?",
-                [roadmapId, roadmapUuid]
+                [roadmapId, assessmentUuid]
             );
         return rows;
     }

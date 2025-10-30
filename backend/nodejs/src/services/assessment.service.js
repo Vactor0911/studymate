@@ -24,9 +24,9 @@ class AssessmentService {
      * @param {BigInt} roadmapId 
      * @returns {Longtext} Json 형식의 문제 데이터
      */
-    static async getProblems(roadmapId, roadmapUuid) {
+    static async getProblems(roadmapId, assessmentUuid) {
         try {
-            const rows = await AssessmentModel.findByRoadmapAndUuid(roadmapId, roadmapUuid);
+            const rows = await AssessmentModel.findByRoadmapAndUuid(roadmapId, assessmentUuid);
             const examId = String(rows[0].id);
             const problems = JSON.parse(rows[0].assessment);
             const questionsWithoutAnswers = problems.questions.map(questions => ({

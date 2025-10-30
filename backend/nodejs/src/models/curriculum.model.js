@@ -8,7 +8,7 @@ class CurriculumModel {
         )
     }
     static async getRoadMaps(userId) {
-        const [rows] = await dbPool.execute(
+        const rows = await dbPool.execute(
             'SELECT uuid, curriculum, subject, grade, created_at FROM curriculum WHERE user_id = ?',
             [userId]
         );
