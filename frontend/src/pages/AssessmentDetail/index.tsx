@@ -9,21 +9,19 @@ import {
 } from "@mui/material";
 import ProgressBar from "../../components/ProgressBar";
 import AnswerSelect from "./AnswerSelect";
-import { useState } from "react";
 import { useAtomValue } from "jotai";
-import { headerRefAtom } from "../../states";
+import { AssessmentDataAtom, headerRefAtom } from "../../states";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 
 const AssessmentDetail = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const headerRef = useAtomValue(headerRefAtom);
-  const [selections] = useState([
-    { content: "선택지 1" },
-    { content: "선택지 2" },
-    { content: "선택지 3" },
-    { content: "선택지 4" },
-    { content: "선택지 5" },
-  ]);
+  const assessmentData = useAtomValue(AssessmentDataAtom);
+  const [index, setIndex] = useState(0);
+  const [selectedOption, setSelectedOption] = useState(-1);
 
   return (
     <Box
@@ -40,27 +38,39 @@ const AssessmentDetail = () => {
           gap={3}
         >
           {/* 진행도 바 */}
-          <ProgressBar total={10} current={3} />
+          <ProgressBar total={11} current={index + 1} />
 
           <Container maxWidth="md">
-            <Stack gap={5} mt={5}>
-              {/* 문제 분류 */}
-              <Typography variant="subtitle1" color="text.secondary">
-                [증가, 감소 구간]
-              </Typography>
+            <Stack gap={5} mt={2}>
+              {/* 문제 지문 */}
+              <Stack>
+                <Typography variant="subtitle1" color="text.secondary">
+                  [지문]
+                </Typography>
+
+                <Typography variant="subtitle1">
+                  {assessmentData.content}
+                </Typography>
+              </Stack>
 
               {/* 문제 제목 */}
-              <Typography variant="h4">국어 문제 지문 어쩌고 저쩌고</Typography>
+              <Typography variant="h4">
+                {assessmentData.assessments[index].title}
+              </Typography>
 
               {/* 선택지 */}
               <Stack gap={3} alignItems="flex-start">
-                {selections.map((selection, index) => (
-                  <AnswerSelect
-                    key={`answer-select-${index}`}
-                    index={index + 1}
-                    content={selection.content}
-                  />
-                ))}
+                {assessmentData.assessments[index].options.map(
+                  (option, index) => (
+                    <AnswerSelect
+                      key={`answer-select-${index}`}
+                      index={index + 1}
+                      content={option}
+                      onClick={() => setSelectedOption(index)}
+                      isSelected={selectedOption === index}
+                    />
+                  )
+                )}
               </Stack>
             </Stack>
           </Container>
@@ -101,21 +111,57 @@ const AssessmentDetail = () => {
                   width: "100px",
                   borderRadius: 2,
                 }}
+                onClick={() => {
+                  setSelectedOption(-1);
+                  setIndex((prev) => prev + 1);
+                }}
               >
                 <Typography variant="body1">건너뛰기</Typography>
               </Button>
             </Stack>
 
             {/* 다음 버튼 */}
-            <Button
-              variant="contained"
-              sx={{
-                width: "100px",
-                borderRadius: 2,
-              }}
-            >
-              <Typography variant="body1">다음</Typography>
-            </Button>
+            {index < assessmentData.assessments.length - 1 && (
+              <Button
+                variant="contained"
+                sx={{
+                  width: "100px",
+                  borderRadius: 2,
+                }}
+                disabled={selectedOption === -1}
+                onClick={() => {
+                  if (selectedOption === -1) {
+                    return;
+                  }
+
+                  setSelectedOption(-1);
+                  setIndex((prev) => prev + 1);
+                }}
+              >
+                <Typography variant="body1">다음</Typography>
+              </Button>
+            )}
+
+            {/* 제출 */}
+            {index === assessmentData.assessments.length - 1 && (
+              <Button
+                variant="contained"
+                sx={{
+                  width: "100px",
+                  borderRadius: 2,
+                }}
+                disabled={selectedOption === -1}
+                onClick={() => {
+                  if (selectedOption === -1) {
+                    return;
+                  }
+
+                  navigate("/");
+                }}
+              >
+                <Typography variant="body1">제출</Typography>
+              </Button>
+            )}
           </Stack>
         </Stack>
       </Container>
