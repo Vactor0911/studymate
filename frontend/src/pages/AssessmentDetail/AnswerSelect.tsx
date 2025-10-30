@@ -1,12 +1,13 @@
-import { Stack, Typography, useTheme } from "@mui/material";
+import { Stack, Typography, useTheme, type StackProps } from "@mui/material";
 
-interface AnswerSelectProps {
+interface AnswerSelectProps extends StackProps {
   index: number;
   content: string;
+  isSelected: boolean;
 }
 
 const AnswerSelect = (props: AnswerSelectProps) => {
-  const { index, content } = props;
+  const { index, content, isSelected, ...others } = props;
 
   const theme = useTheme();
 
@@ -23,7 +24,9 @@ const AnswerSelect = (props: AnswerSelectProps) => {
         "&:hover": {
           color: theme.palette.primary.main,
         },
+        color: isSelected ? theme.palette.primary.main : "inherit",
       }}
+      {...others}
     >
       <Stack
         className="number"
@@ -34,6 +37,7 @@ const AnswerSelect = (props: AnswerSelectProps) => {
         alignItems="center"
         borderRadius="50%"
         border={`1px solid ${theme.palette.secondary.main}`}
+        borderColor={isSelected ? theme.palette.primary.main : "inherit"}
         sx={{
           transition: "all 0.2s ease-out",
         }}

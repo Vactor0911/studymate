@@ -14,6 +14,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import MarkedItem from "./MarkedItem";
 import Analyze from "./Analyze";
 import AnalyzeResult from "./AnalyzeResult";
+import { useAtomValue } from "jotai";
+import { answerAtom, AssessmentDataAtom, userSelectAtom } from "../../states";
 
 const Result = () => {
   const theme = useTheme();
@@ -21,6 +23,10 @@ const Result = () => {
   const [isAnalyzed, setIsAnalyzed] = useState(false);
   const pieContainerRef = useRef<HTMLDivElement | null>(null);
   const [chartSize, setChartSize] = useState(200);
+  const AssessmentData = useAtomValue(AssessmentDataAtom);
+  const userSelect = useAtomValue(userSelectAtom);
+  const answer = useAtomValue(answerAtom);
+  const [pageIndex, setPageIndex] = useState(0);
 
   useEffect(() => {
     if (pieContainerRef.current) {
@@ -54,7 +60,7 @@ const Result = () => {
               bgcolor={theme.palette.primary.main}
             >
               <CalendarMonthRoundedIcon />
-              <Typography variant="subtitle2">2025 / 10 / 26</Typography>
+              <Typography variant="subtitle2">2025 / 10 / 31</Typography>
             </Stack>
 
             {/* 세부 정보 */}
@@ -71,7 +77,7 @@ const Result = () => {
               >
                 {/* 학년 */}
                 <Typography variant="body1" fontWeight="bold">
-                  고등학교 3학년
+                  고등학교 1학년
                 </Typography>
 
                 {/* 과목 */}
@@ -93,7 +99,7 @@ const Result = () => {
                   overflow="hidden"
                   textOverflow="ellipsis"
                 >
-                  2단원 | 2-1 어떻게 읽을까 삶을 바꾼 만남
+                  현대 소설의 정의, 특징, 역사를 학습합니다.
                 </Typography>
               </Stack>
             </Box>
@@ -126,54 +132,20 @@ const Result = () => {
             </Stack>
 
             {/* 채점 결과 */}
-            <Stack borderRadius={3} overflow="hidden" bgcolor="green" flex={1}>
-              {[
-                {
-                  index: 1,
-                  question:
-                    "글쓴이가 '삶을 바꾼 만남'이라고 표현한 이유로 가장 적절한 것은?",
-                  isCorrect: true,
-                },
-                {
-                  index: 2,
-                  question:
-                    "글쓴이가 '삶을 바꾼 만남'이라고 표현한 이유로 가장 적절한 것은?",
-                  isCorrect: true,
-                },
-                {
-                  index: 3,
-                  question:
-                    "글쓴이가 '삶을 바꾼 만남'이라고 표현한 이유로 가장 적절한 것은?",
-                  isCorrect: true,
-                },
-                {
-                  index: 4,
-                  question:
-                    "글쓴이가 '삶을 바꾼 만남'이라고 표현한 이유로 가장 적절한 것은?",
-                  isCorrect: true,
-                },
-                {
-                  index: 5,
-                  question:
-                    "글쓴이가 '삶을 바꾼 만남'이라고 표현한 이유로 가장 적절한 것은?",
-                  isCorrect: true,
-                },
-                {
-                  index: 6,
-                  question:
-                    "글쓴이가 '삶을 바꾼 만남'이라고 표현한 이유로 가장 적절한 것은?",
-                  isCorrect: true,
-                },
-              ].map((item, index) => (
-                <MarkedItem
-                  key={`marked-item-${index}`}
-                  width="100%"
-                  height="calc(100% / 6)"
-                  index={index + 1}
-                  question={item.question}
-                  bgcolor={index % 2 === 0 ? "#D9EBE9" : "#F4F4F4"}
-                />
-              ))}
+            <Stack borderRadius={3} overflow="hidden" flex={1}>
+              {AssessmentData.assessments
+                .slice(pageIndex * 6, 6 + pageIndex * 6)
+                .map((assessment, index) => (
+                  <MarkedItem
+                    key={`marked-item-${index}`}
+                    width="100%"
+                    height="calc(100% / 6)"
+                    index={index + 1}
+                    question={assessment.title}
+                    bgcolor={index % 2 === 0 ? "#D9EBE9" : "#F4F4F4"}
+                    isCorrect={userSelect[index] === answer[index]}
+                  />
+                ))}
             </Stack>
           </Stack>
 
@@ -196,6 +168,7 @@ const Result = () => {
                 minWidth: 0,
                 borderRadius: "50%",
               }}
+              onClick={() => setPageIndex(0)}
             >
               <EastRoundedIcon sx={{ transform: "rotate(180deg)" }} />
             </Button>
@@ -209,6 +182,7 @@ const Result = () => {
                 minWidth: 0,
                 borderRadius: "50%",
               }}
+              onClick={() => setPageIndex(1)}
             >
               <EastRoundedIcon />
             </Button>

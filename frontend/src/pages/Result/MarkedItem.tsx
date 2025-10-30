@@ -5,10 +5,11 @@ import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 interface MarkedItemProps extends StackProps {
   index: number;
   question: string;
+  isCorrect: boolean;
 }
 
 const MarkedItem = (props: MarkedItemProps) => {
-  const { index, question, ...others } = props;
+  const { index, question, isCorrect, ...others } = props;
 
   const theme = useTheme();
 
@@ -44,7 +45,7 @@ const MarkedItem = (props: MarkedItemProps) => {
       <Stack direction="row" borderRadius={1} overflow="hidden">
         {/* O */}
         <Stack
-          bgcolor={theme.palette.secondary.main}
+          bgcolor={isCorrect ? theme.palette.secondary.main : "white"}
           justifyContent="center"
           alignItems="center"
           p={1}
@@ -52,14 +53,14 @@ const MarkedItem = (props: MarkedItemProps) => {
         >
           <RadioButtonUncheckedRoundedIcon
             sx={{
-              color: "white",
+              color: isCorrect ? "white" : "inherit",
             }}
           />
         </Stack>
 
         {/* X */}
         <Stack
-          bgcolor="white"
+          bgcolor={!isCorrect ? theme.palette.secondary.main : "white"}
           justifyContent="center"
           alignItems="center"
           p={1}
@@ -67,6 +68,7 @@ const MarkedItem = (props: MarkedItemProps) => {
         >
           <ClearRoundedIcon
             sx={{
+              color: !isCorrect ? "white" : "inherit",
               transform: "scale(1.1)",
             }}
           />

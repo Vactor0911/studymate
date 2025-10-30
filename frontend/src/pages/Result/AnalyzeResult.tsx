@@ -7,17 +7,21 @@ import {
   Zoom,
 } from "@mui/material";
 import BackgroundEffect from "./BackgroundEffect";
+import { useAtomValue } from "jotai";
+import { userAtom } from "../../states/auth";
 
 const AnalyzeResult = () => {
   const theme = useTheme();
 
+  const user = useAtomValue(userAtom);
+
   return (
     <Stack py={15} alignItems="center" gap={3} position="relative">
       {/* 헤더 */}
-      <Typography variant="h4">{"홍길동"}님의 공부 습관은...</Typography>
+      <Typography variant="h4">{user?.user_id}님의 공부 습관은...</Typography>
 
       <Typography variant="subtitle1" color="text.secondary" fontWeight={500}>
-        일주일동안의 {"홍길동"}님의 공부 습관을 분석했습니다.
+        일주일동안의 {user?.user_id}님의 공부 습관을 분석했습니다.
       </Typography>
 
       <Container maxWidth="md">
@@ -47,14 +51,28 @@ const AnalyzeResult = () => {
             >
               {[
                 {
-                  label: "장점",
-                  content:
-                    "문학에선 감상 포인트를 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구",
+                  label: "뛰어난 점",
+                  content: (
+                    <span>
+                      한국 현대시사의 기본 이해
+                      <br />
+                      시인별 특징 구분
+                      <br />
+                      한국 현대문학 역사 파악
+                    </span>
+                  ),
                 },
                 {
-                  label: "단점",
-                  content:
-                    "문학에선 감상 포인트를 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구",
+                  label: "보완할 점",
+                  content: (
+                    <span>
+                      시적 표현의 세부 해석
+                      <br />
+                      상징과 은유의 구분
+                      <br />
+                      작품의 주제 파악
+                    </span>
+                  ),
                 },
               ].map((item) => (
                 <>
@@ -109,42 +127,13 @@ const AnalyzeResult = () => {
               gap={0.5}
               bgcolor="white"
             >
-              {[
-                {
-                  label: "장점",
-                  content:
-                    "문학에선 감상 포인트를 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구",
-                },
-                {
-                  label: "단점",
-                  content:
-                    "문학에선 감상 포인트를 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구",
-                },
-              ].map((item) => (
-                <>
-                  <Typography
-                    variant="subtitle1"
-                    fontWeight="bold"
-                    position="relative"
-                    sx={{
-                      "&:before": {
-                        content: '""',
-                        position: "absolute",
-                        width: "6px",
-                        height: "6px",
-                        top: "50%",
-                        left: "-12px",
-                        transform: "translate(-50%, -50%)",
-                        borderRadius: "50%",
-                        bgcolor: theme.palette.primary.main,
-                      },
-                    }}
-                  >
-                    {item.label} :
-                  </Typography>
-                  <Typography variant="body1">{item.content}</Typography>
-                </>
-              ))}
+              <Typography variant="body1">
+                기본 문학 개념 정리 및 반복 학습
+                <br />
+                유명 현대시 작품 정독 및 깊이 있는 분석
+                <br />
+                표현 기법 분류 및 사례별 정리
+              </Typography>
             </Stack>
           </Stack>
         </Zoom>

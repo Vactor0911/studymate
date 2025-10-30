@@ -1,5 +1,7 @@
 import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 import AloImage from "../../assets/Alo.png";
+import { useAtomValue } from "jotai";
+import { userAtom } from "../../states/auth";
 
 interface AnalyzeProps {
   onAnalyze?: () => void;
@@ -9,6 +11,8 @@ const Analyze = (props: AnalyzeProps) => {
   const { onAnalyze } = props;
 
   const theme = useTheme();
+
+  const user = useAtomValue(userAtom);
 
   return (
     <Stack direction="row" py={20} gap={15} justifyContent="center">
@@ -26,7 +30,7 @@ const Analyze = (props: AnalyzeProps) => {
 
         {/* 문구 */}
         <Typography variant="body1" color="text.secondary">
-          AI가 {"홍길동"}님의 공부 장단점 분석과
+          AI가 {user?.user_id}님의 공부 장단점 분석과
           <br />
           과목별 공부 습관을 분석해 드립니다.
         </Typography>

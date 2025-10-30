@@ -19,8 +19,8 @@ const ProgressBar = (props: ProgressBarProps) => {
     <Stack gap={1}>
       {/* 문제 수 */}
       <Stack direction="row" justifyContent="space-between" px={1}>
-        <Typography variant="body1">1</Typography>
-        <Typography variant="body1">{total}</Typography>
+        <Typography variant="body1" color="text.secondary">{current}</Typography>
+        <Typography variant="body1" color="text.secondary">{total}</Typography>
       </Stack>
 
       {/* 진행도 바 */}
