@@ -53,13 +53,23 @@ class AssessmentService {
      */
     static async checkAnswers(userAnswers, curriculumId) {
         try {
+            console.log('checkAnswers 호출됨 - curriculumId:', curriculumId);
+            console.log('userAnswers:', userAnswers);
+
             const rows = await AssessmentModel.findByCurriculumId(curriculumId);
+            console.log('조회된 행 수:', rows.length);
+
+            if (!rows || rows.length === 0) {
+                throw new Error(`curriculum_id ${curriculumId}에 해당하는 평가를 찾을 수 없습니다.`);
+            }
+
             const problems = JSON.parse(rows[0].assessment);
             const questionsAnswers = problems.questions.map(questions => questions.answer);
             const result = userAnswers.map((answer, index) => {
                 const isCorrect = answer === questionsAnswers[index];
                 return {
                     problemNumber: index+1,
+                    question : problems.questions[index].question,
                     userAnswer: answer,
                     correctAnswer: questionsAnswers[index],
                     isCorrect
@@ -70,10 +80,15 @@ class AssessmentService {
                 result,
                 corrects: correctCount
             };
-            await AssessmentModel.updateExamResult(testResult, curriculumId);
+
+            console.log('업데이트 전 testResult:', testResult);
+            const updateResult = await AssessmentModel.updateExamResult(testResult, curriculumId);
+            console.log('업데이트 결과:', updateResult);
+
             return testResult;
         }
         catch (error) {
+            console.error('checkAnswers 에러:', error);
             throw new Error(`정답 확인 실패: ${error.message}`);
         }
     }

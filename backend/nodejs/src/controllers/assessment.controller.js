@@ -38,7 +38,7 @@ class AssessmentController {
     try {
       const { userAnswers, curriculumId } = req.body;
       const result = await AssessmentService.checkAnswers(userAnswers, curriculumId);
-      res.status(200).json({ message: "정답 확인이 완료되었습니다." });
+      res.status(200).json({ message: "정답 확인이 완료되었습니다.", result });
     } catch (error) {
       res
         .status(500)
