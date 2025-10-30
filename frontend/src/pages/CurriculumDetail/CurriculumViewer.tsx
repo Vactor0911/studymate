@@ -19,6 +19,8 @@ interface NodeData {
   parent_id: number | string | null;
   isOptional?: boolean;
   category?: string;
+  duration?: string;
+  description?: string;
 }
 
 // 노드 데이터 타입
@@ -57,61 +59,257 @@ const CurriculumViewer = ({
 
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
-  const [roadmapData, setRoadmapData] = useState<NodeData[]>([
-    { "id": 1, "title": "웹 애플리케이션 개발자", "parent_id": null, "isOptional": false, "category": "job" },
-    { "id": 2, "title": "기초", "parent_id": 1, "isOptional": false, "category": "stage" },
-    { "id": 3, "title": "기본 연산과 방정식을 학습합니다", "parent_id": 2, "isOptional": false, "category": "skill" },
-    { "id": 4, "title": "관동별곡의 장면을 시각화하고 친구들과 감상을 나눕니다.", "parent_id": 2, "isOptional": false, "category": "skill" },
-    { "id": 5, "title": "버전 관리(Git)", "parent_id": 2, "isOptional": false, "category": "skill" },
-    { "id": 6, "title": "웹 기초", "parent_id": 2, "isOptional": false, "category": "skill" },
-    { "id": 7, "title": "핵심", "parent_id": 2, "isOptional": false, "category": "stage" },
-    { "id": 8, "title": "JavaScript 심화", "parent_id": 7, "isOptional": false, "category": "skill" },
-    { "id": 9, "title": "비동기 처리", "parent_id": 8, "isOptional": false, "category": "skill" },
-    { "id": 10, "title": "DOM 조작", "parent_id": 8, "isOptional": false, "category": "skill" },
-    { "id": 11, "title": "프론트엔드 프레임워크", "parent_id": 7, "isOptional": false, "category": "skill" },
-    { "id": 12, "title": "React", "parent_id": 11, "isOptional": true, "category": "skill" },
-    { "id": 13, "title": "Vue.js", "parent_id": 11, "isOptional": true, "category": "skill" },
-    { "id": 14, "title": "백엔드 언어", "parent_id": 7, "isOptional": false, "category": "skill" },
-    { "id": 15, "title": "Node.js", "parent_id": 14, "isOptional": true, "category": "skill" },
-    { "id": 16, "title": "Python", "parent_id": 14, "isOptional": true, "category": "skill" },
-    { "id": 17, "title": "데이터베이스", "parent_id": 7, "isOptional": false, "category": "skill" },
-    { "id": 18, "title": "MySQL", "parent_id": 17, "isOptional": true, "category": "skill" },
-    { "id": 19, "title": "MongoDB", "parent_id": 17, "isOptional": true, "category": "skill" },
-    { "id": 20, "title": "심화", "parent_id": 7, "isOptional": false, "category": "stage" },
-    { "id": 21, "title": "풀스택 개발", "parent_id": 20, "isOptional": false, "category": "skill" },
-    { "id": 22, "title": "RESTful API", "parent_id": 21, "isOptional": false, "category": "skill" },
-    { "id": 23, "title": "GraphQL", "parent_id": 21, "isOptional": true, "category": "skill" },
-    { "id": 24, "title": "테스트 및 배포", "parent_id": 20, "isOptional": false, "category": "skill" },
-    { "id": 25, "title": "Jest", "parent_id": 24, "isOptional": true, "category": "skill" },
-    { "id": 26, "title": "CI/CD", "parent_id": 24, "isOptional": false, "category": "skill" },
-    { "id": 27, "title": "고급", "parent_id": 20, "isOptional": false, "category": "stage" },
-    { "id": 28, "title": "클라우드 서비스", "parent_id": 27, "isOptional": false, "category": "skill" },
-    { "id": 29, "title": "AWS", "parent_id": 28, "isOptional": true, "category": "skill" },
-    { "id": 30, "title": "Azure", "parent_id": 28, "isOptional": true, "category": "skill" },
-    { "id": 31, "title": "DevOps", "parent_id": 27, "isOptional": false, "category": "skill" },
-    { "id": 32, "title": "Docker", "parent_id": 31, "isOptional": false, "category": "skill" },
-    { "id": 33, "title": "Kubernetes", "parent_id": 31, "isOptional": true, "category": "skill" },
-    { "id": 34, "title": "전문", "parent_id": 27, "isOptional": false, "category": "stage" },
-    { "id": 35, "title": "프로젝트 관리", "parent_id": 34, "isOptional": false, "category": "skill" },
-    { "id": 36, "title": "Agile", "parent_id": 35, "isOptional": false, "category": "skill" },
-    { "id": 37, "title": "Scrum", "parent_id": 35, "isOptional": true, "category": "skill" },
-    { "id": 38, "title": "특화 기술", "parent_id": 34, "isOptional": false, "category": "skill" },
-    { "id": 39, "title": "AI 통합", "parent_id": 38, "isOptional": true, "category": "skill" },
-    { "id": 40, "title": "IoT 애플리케이션", "parent_id": 38, "isOptional": true, "category": "skill" },
-    { "id": 41, "title": "정보처리기사", "parent_id": 4, "isOptional": false, "category": "certificate" },
-    { "id": 42, "title": "AWS 인증", "parent_id": 29, "isOptional": true, "category": "certificate" },
-    { "id": 43, "title": "Azure 인증", "parent_id": 30, "isOptional": true, "category": "certificate" }]);
+  const [roadmapData] = useState<NodeData[]>([
+    {
+      id: 1,
+      title: "국어",
+      parent_id: null,
+      category: "subject",
+      duration: "6개월",
+      description: "고등학교 1학년 국어 과목을 전반적으로 학습합니다",
+    },
+    {
+      id: 2,
+      title: "입문 단계",
+      parent_id: 1,
+      category: "title",
+      duration: "1개월",
+      description: "국어의 기본 개념을 학습합니다",
+    },
+    {
+      id: 3,
+      title: "문법 기초",
+      parent_id: 2,
+      category: "topic",
+      duration: "2주",
+      description: "국어 문법의 기본적인 개념을 익힙니다",
+    },
+    {
+      id: 4,
+      title: "명사",
+      parent_id: 3,
+      category: "topic",
+      duration: "1주",
+      description: "명사의 정의와 종류를 학습합니다",
+    },
+    {
+      id: 5,
+      title: "동사",
+      parent_id: 4,
+      category: "topic",
+      duration: "1주",
+      description: "동사의 활용과 종류를 학습합니다",
+    },
+    {
+      id: 6,
+      title: "형용사",
+      parent_id: 5,
+      category: "topic",
+      duration: "1주",
+      description: "형용사의 역할과 활용을 학습합니다",
+    },
+    {
+      id: 7,
+      title: "기초 단계",
+      parent_id: 6,
+      category: "title",
+      duration: "1개월",
+      description: "어휘력과 독해력을 강화합니다",
+    },
+    {
+      id: 8,
+      title: "기본 어휘",
+      parent_id: 7,
+      category: "topic",
+      duration: "1주",
+      description: "기본적인 국어 어휘를 습득합니다",
+    },
+    {
+      id: 9,
+      title: "독해 기초",
+      parent_id: 8,
+      category: "topic",
+      duration: "2주",
+      description: "문장의 구조와 독해 기법을 학습합니다",
+    },
+    {
+      id: 10,
+      title: "문장 이해",
+      parent_id: 9,
+      category: "topic",
+      duration: "1주",
+      description: "문장의 의미와 구조를 이해합니다",
+    },
+    {
+      id: 11,
+      title: "핵심 단계",
+      parent_id: 10,
+      category: "title",
+      duration: "1개월",
+      description: "국어의 핵심 개념을 심도 있게 학습합니다",
+    },
+    {
+      id: 12,
+      title: "작문 기초",
+      parent_id: 11,
+      category: "topic",
+      duration: "2주",
+      description: "작문의 기본 원칙과 방법을 학습합니다",
+    },
+    {
+      id: 13,
+      title: "서술형 작성",
+      parent_id: 12,
+      category: "topic",
+      duration: "1주",
+      description: "서술형 문제의 작성 방법을 학습합니다",
+    },
+    {
+      id: 14,
+      title: "비문학 독해",
+      parent_id: 13,
+      category: "topic",
+      duration: "2주",
+      description: "비문학 지문 분석 및 이해를 학습합니다",
+    },
+    {
+      id: 15,
+      title: "문학 감상",
+      parent_id: 14,
+      category: "topic",
+      duration: "1주",
+      description: "문학 작품의 감상 방법을 학습합니다",
+    },
+    {
+      id: 16,
+      title: "심화 단계",
+      parent_id: 15,
+      category: "title",
+      duration: "1개월",
+      description: "심화된 국어 지식과 능력을 배양합니다",
+    },
+    {
+      id: 17,
+      title: "문학의 이해",
+      parent_id: 16,
+      category: "topic",
+      duration: "2주",
+      description: "문학의 다양한 장르와 특성을 학습합니다",
+    },
+    {
+      id: 18,
+      title: "고전 문학",
+      parent_id: 17,
+      category: "topic",
+      duration: "2주",
+      description: "고전 문학의 분석과 이해를 학습합니다",
+    },
+    {
+      id: 19,
+      title: "현대 문학",
+      parent_id: 18,
+      category: "topic",
+      duration: "2주",
+      description: "현대 문학 작품의 특징과 분석을 학습합니다",
+    },
+    {
+      id: 20,
+      title: "고급 단계",
+      parent_id: 19,
+      category: "title",
+      duration: "1개월",
+      description: "국어 능력을 고급 수준으로 향상시킵니다",
+    },
+    {
+      id: 21,
+      title: "수필 작성",
+      parent_id: 20,
+      category: "topic",
+      duration: "1주",
+      description: "수필의 구조와 작성 방법을 학습합니다",
+    },
+    {
+      id: 22,
+      title: "시의 이해",
+      parent_id: 21,
+      category: "topic",
+      duration: "1주",
+      description: "시의 형식과 표현법을 학습합니다",
+    },
+    {
+      id: 23,
+      title: "비평적 사고",
+      parent_id: 22,
+      category: "topic",
+      duration: "2주",
+      description: "비평적 사고를 통해 텍스트를 분석합니다",
+    },
+    {
+      id: 24,
+      title: "창의적 작문",
+      parent_id: 23,
+      category: "topic",
+      duration: "2주",
+      description: "창의적인 아이디어를 바탕으로 글을 작성합니다",
+    },
+    {
+      id: 25,
+      title: "연극 대본",
+      parent_id: 24,
+      category: "topic",
+      duration: "1주",
+      description: "연극 대본의 작성 방법을 학습합니다",
+    },
+    {
+      id: 26,
+      title: "토론 및 발표",
+      parent_id: 25,
+      category: "topic",
+      duration: "2주",
+      description: "토론 기술과 발표 능력을 배양합니다",
+    },
+    {
+      id: 27,
+      title: "문학과 사회",
+      parent_id: 26,
+      category: "topic",
+      duration: "2주",
+      description: "문학 작품이 사회에 미치는 영향을 탐구합니다",
+    },
+    {
+      id: 28,
+      title: "언어와 사고",
+      parent_id: 27,
+      category: "topic",
+      duration: "2주",
+      description: "언어가 사고에 미치는 영향을 학습합니다",
+    },
+    {
+      id: 29,
+      title: "고급 작문",
+      parent_id: 28,
+      category: "topic",
+      duration: "2주",
+      description: "복잡한 글쓰기 기법을 심도 있게 학습합니다",
+    },
+    {
+      id: 30,
+      title: "문학 비평",
+      parent_id: 29,
+      category: "topic",
+      duration: "2주",
+      description: "문학 작품을 비평하는 방법을 학습합니다",
+    },
+  ]);
   const reactFlowInstance = useRef<ReactFlowInstance<Node, Edge> | null>(null);
 
   // 노드 배경색 추출
   const getNodeBackgroundColor = useCallback(
     (category: string) => {
       switch (category) {
-        case "job":
-        case "stage":
+        case "subject":
+        case "title":
           return theme.palette.primary.main;
-        case "certificate":
-          return theme.palette.secondary.light;
         default:
           return "inherit"; // 기본 배경색
       }
@@ -126,7 +324,7 @@ const CurriculumViewer = ({
         id: `node-${node.id}`,
         data: {
           label:
-            node.category === "job" || node.category === "stage" ? (
+            node.category === "subject" || node.category === "title" ? (
               <div
                 css={{
                   display: "flex",
@@ -175,11 +373,11 @@ const CurriculumViewer = ({
           padding: "10px 0",
           backgroundColor: getNodeBackgroundColor(node.category || "default"),
           border:
-            node.category === "skill"
+            node.category === "topic"
               ? `2px solid ${theme.palette.primary.main}`
               : "2px solid black",
           color:
-            node.category === "job" || node.category === "stage"
+            node.category === "subject" || node.category === "title"
               ? "white"
               : "black",
         },
@@ -195,7 +393,7 @@ const CurriculumViewer = ({
         if (!nodeData) {
           // 노드 데이터가 없는 경우
           return;
-        } else if (nodeData.category === "job") {
+        } else if (nodeData.category === "subject") {
           // category가 "job"인 경우
           node.type = "input";
         } else if (!parentIdSet.has(nodeData.id)) {
@@ -227,11 +425,12 @@ const CurriculumViewer = ({
           childrenMap[parentKey].push(`node-${node.id}`);
         }
       });
+      console.log(childrenMap);
 
       // 단계 카테고리 노드 찾기
       const stageNodes = nodes.filter((node) => {
         const data = idToNode.get(node.id);
-        return data?.category === "stage";
+        return data?.category === "title";
       });
 
       // 재귀적으로 위치 계산
@@ -265,7 +464,7 @@ const CurriculumViewer = ({
           // 자식 먼저 배치
           const childXs: number[] = [];
           children
-            .filter((child) => idToNode.get(child)?.category !== "stage")
+            .filter((child) => idToNode.get(child)?.category !== "title")
             .forEach((childId) => {
               setPositions(childId, depth + 1, direction);
               childXs.push(nodePositions[childId].y);
@@ -347,8 +546,8 @@ const CurriculumViewer = ({
       const selectedNode = roadmapData.find(
         (n) =>
           `node-${n.id}` === node.id &&
-          n.category !== "job" &&
-          n.category !== "stage"
+          n.category !== "subject" &&
+          n.category !== "title"
       );
       if (!selectedNode) {
         onNodeDetail(null, false); // 상세정보 없음

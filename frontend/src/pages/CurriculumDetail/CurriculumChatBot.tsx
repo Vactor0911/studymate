@@ -60,7 +60,7 @@ const CurriculumChatBot = () => {
         <ChatInput
           // onSend={handleMessageSend}
           onSend={() => {}}
-          placeholder="로드맵 AI에게 무엇이든 물어보세요"
+          placeholder="Studymate에게 무엇이든 물어보세요"
           multiline={true}
         />
       </Box>

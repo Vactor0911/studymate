@@ -94,6 +94,7 @@ const ChatInput = (props: ChatInputProps) => {
       {/* 입력란 */}
       <TextField
         fullWidth
+        variant="outlined"
         multiline={multiline}
         placeholder={placeholder}
         value={input}

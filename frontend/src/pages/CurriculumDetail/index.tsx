@@ -18,14 +18,15 @@ import TitledContainer from "./TitledContainer";
 import StyledPanelResizeHandle from "./StyledPanelResizeHandle";
 import CurriculumViewer from "./CurriculumViewer";
 import { useCallback, useRef, useState } from "react";
-import { useAtom } from "jotai";
-import { roadmapTabAtom } from "../../states";
+import { useAtom, useAtomValue } from "jotai";
+import { headerRefAtom, roadmapTabAtom } from "../../states";
 import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
 import CurriculumChatBot from "./CurriculumChatBot";
 import RoadMapDetails, { type NodeDetail } from "./RoadMapDetails";
 
 const CurriculumDetail = () => {
   const theme = useTheme();
+  const headerRef = useAtomValue(headerRefAtom);
   const isPC = useMediaQuery(theme.breakpoints.up("lg"));
 
   // 화면 크기
@@ -118,7 +119,11 @@ const CurriculumDetail = () => {
   // PC 화면 렌더링
   if (isPC) {
     return (
-      <Stack padding={2} direction="row" height="calc(100vh - 64px)">
+      <Stack
+        padding={2}
+        direction="row"
+        height={`calc(100vh - ${headerRef?.current?.clientHeight}px)`}
+      >
         <PanelGroup direction="horizontal">
           {/* 상세정보 패널 */}
           <Panel

@@ -9,8 +9,10 @@ import {
 } from "@mui/material";
 import { useCallback, useState } from "react";
 import CurriculumItem from "./CurriculumItem";
+import { useNavigate } from "react-router";
 
 type CurriculumType = {
+  uuid: string;
   createdAt: string;
   subject: string;
   grade: string;
@@ -19,30 +21,35 @@ type CurriculumType = {
 
 const CurriculumData = [
   {
+    uuid: "aa6be864-ebc7-4433-87a9-5e6dacf56e6f",
     createdAt: "2025 / 10 / 30",
     subject: "국어",
     grade: "고등학교 1학년",
     detail: "현대시의 정의, 특징, 역사를 이해하고 기본 분석 능력을 기른다.",
   },
   {
+    uuid: "aa6be864-ebc7-4433-87a9-5e6dacf56e6f",
     createdAt: "2025 / 10 / 31",
     subject: "수학",
     grade: "고등학교 1학년",
     detail: "기본적인 수의 계산과 식의 정리 능력을 기른다.",
   },
   {
+    uuid: "aa6be864-ebc7-4433-87a9-5e6dacf56e6f",
     createdAt: "2025 / 10 / 31",
-    subject: "수학",
-    grade: "중학교 3학년",
-    detail: "기본 연산과 방정식을 학습합니다",
+    subject: "국어",
+    grade: "고등학교 1학년",
+    detail: "현대 문학의 다양한 장르와 흐름을 이해합니다",
   },
 ] as CurriculumType[];
 
 const Curriculum = () => {
+  const navigate = useNavigate();
+
   const [grade, setGrade] = useState(1);
   const [subject, setSubject] = useState("과목");
   const [duration, setDuration] = useState("기간");
-  const [curriculums, ] = useState(CurriculumData);
+  const [curriculums] = useState(CurriculumData);
 
   const getColor = useCallback((index: number) => {
     switch (index) {
@@ -135,6 +142,7 @@ const Curriculum = () => {
               subject={item.subject}
               detail={item.detail}
               color={getColor(index)}
+              onClick={() => navigate("aa6be864-ebc7-4433-87a9-5e6dacf56e6f")}
             />
           ))}
         </Stack>
