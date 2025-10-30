@@ -29,7 +29,7 @@ const Assessment = () => {
             grade="고등학교 1학년"
             subject="국어"
             createdAt="2025 / 10 / 31"
-            content="현대시의 정의, 특징, 역사를 학습합니다."
+            content="현대 소설의 정의, 특징, 역사를 학습합니다."
           />
         </Stack>
 

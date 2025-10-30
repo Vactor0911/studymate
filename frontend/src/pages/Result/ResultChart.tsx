@@ -15,7 +15,7 @@ const ResultChart = (props: ResultChartProps) => {
   const theme = useTheme();
 
   const data1 = [
-    { label: "정답 수", value: 10, color: theme.palette.primary.main },
+    { label: "정답 수", value: 6, color: theme.palette.primary.main },
     { label: "오답 수", value: 5, color: theme.palette.secondary.main },
   ];
 
@@ -26,7 +26,7 @@ const ResultChart = (props: ResultChartProps) => {
         outerRadius: size * 0.5,
         data: data1,
         arcLabel: (params) =>
-          params.label === "정답 수" ? `${getAnswerRatio(15, 10)}%` : "",
+          params.label === "정답 수" ? `${getAnswerRatio(11, 6)}%` : "",
         highlightScope: { fade: "global", highlight: "item" },
       },
     ],
@@ -55,7 +55,7 @@ const ResultChart = (props: ResultChartProps) => {
             fontSize: "2em",
           }}
         >
-          {15}
+          {11}
         </span>
         문제
       </Typography>
