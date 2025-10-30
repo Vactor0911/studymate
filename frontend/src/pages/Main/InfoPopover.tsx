@@ -8,11 +8,21 @@ interface InfoPopoverProps {
   subject: string;
   focusContent: string;
   targetContent: string;
+  isTransformOriginOnTop: boolean;
+  darker?: boolean;
 }
 
 const InfoPopover = (props: InfoPopoverProps) => {
-  const { anchorEl, setAnchorEl, grade, subject, focusContent, targetContent } =
-    props;
+  const {
+    anchorEl,
+    setAnchorEl,
+    grade,
+    subject,
+    focusContent,
+    targetContent,
+    isTransformOriginOnTop,
+    darker,
+  } = props;
 
   const theme = useTheme();
 
@@ -25,7 +35,7 @@ const InfoPopover = (props: InfoPopoverProps) => {
         horizontal: "right",
       }}
       transformOrigin={{
-        vertical: "bottom",
+        vertical: isTransformOriginOnTop ? "top" : "bottom",
         horizontal: "left",
       }}
       sx={{
@@ -56,7 +66,7 @@ const InfoPopover = (props: InfoPopoverProps) => {
             height: "100%",
             top: 0,
             left: 0,
-            bgcolor: "#CCCCCC33",
+            bgcolor: "#F3F3F333",
             backdropFilter: "blur(6px)",
             borderRadius: 3,
           },
@@ -84,10 +94,18 @@ const InfoPopover = (props: InfoPopoverProps) => {
               width="6px"
               height="6px"
               borderRadius="50%"
-              bgcolor={theme.palette.secondary.dark}
+              bgcolor={
+                darker
+                  ? theme.palette.secondary.main
+                  : theme.palette.secondary.dark
+              }
             />
 
-            <Typography variant="h6" color="text.secondary" fontWeight={500}>
+            <Typography
+              variant="h6"
+              color={darker ? theme.palette.secondary.main : "text.secondary"}
+              fontWeight={500}
+            >
               {subject}
             </Typography>
           </Stack>

@@ -1,6 +1,6 @@
 import { Stack, useTheme } from "@mui/material";
 import BarButton from "./BarButton";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import InfoPopover from "./InfoPopover";
 import { useAtomValue } from "jotai";
 import { selectedBarAtom } from "../../states";
@@ -52,6 +52,13 @@ const BarHistory = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
   const selectedBar = useAtomValue(selectedBarAtom);
   const [data] = useState<SelectedDataType[]>(DATA);
+  const [selectedBarLocal, setSelectedBarLocal] = useState(0);
+
+  useEffect(() => {
+    if (selectedBar) {
+      setSelectedBarLocal(Number(selectedBar) - 1);
+    }
+  }, [selectedBar]);
 
   const processColor = useCallback(
     (origin: string, index: string) => {
@@ -106,10 +113,12 @@ const BarHistory = () => {
       <InfoPopover
         anchorEl={anchorEl}
         setAnchorEl={setAnchorEl}
-        grade={selectedBar && data[Number(selectedBar) - 1].grade}
-        subject={selectedBar && data[Number(selectedBar) - 1].subject}
-        focusContent={selectedBar && data[Number(selectedBar) - 1].focusContent}
-        targetContent={selectedBar && data[Number(selectedBar) - 1].targetContent}
+        grade={data[selectedBarLocal].grade}
+        subject={data[selectedBarLocal].subject}
+        focusContent={data[selectedBarLocal].focusContent}
+        targetContent={data[selectedBarLocal].targetContent}
+        isTransformOriginOnTop={selectedBarLocal % 2 === 1}
+        darker={selectedBarLocal === 3}
       />
     </Stack>
   );
