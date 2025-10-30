@@ -12,12 +12,14 @@ import LogoIcon from "/logo.svg";
 import { useLocation, useNavigate } from "react-router";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import PersonIcon from "@mui/icons-material/Person";
-import { useCallback } from "react";
-import { useAtomValue } from "jotai";
+import { useCallback, useEffect, useRef } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
 import { userAtom } from "../states/auth";
 import ProfileAvatarButton from "./ProfileAvatarButton";
 import { logout } from "../services/auth";
 import { useSnackbar } from "notistack";
+import { headerRefAtom } from "../states";
+import { theme } from "../utils/theme";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -25,6 +27,14 @@ const Header = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const user = useAtomValue(userAtom);
+  const setHeaderRef = useSetAtom(headerRefAtom);
+  const headerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (headerRef) {
+      setHeaderRef(headerRef);
+    }
+  }, [setHeaderRef]);
 
   // 프로필 버튼 클릭
   const handleProfileButtonClick = useCallback(async () => {
@@ -43,13 +53,14 @@ const Header = () => {
 
   return (
     <AppBar
+      ref={headerRef}
       position="static"
       color="inherit"
       sx={{
         boxShadow: "0 0 16px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <Container maxWidth="xl">
+      <Container maxWidth="lg">
         <Toolbar
           disableGutters
           sx={{
@@ -123,10 +134,21 @@ const Header = () => {
                 <Button
                   key={item.path}
                   variant="contained"
-                  color={
-                    location.pathname === item.path ? "primary" : "transparent"
-                  }
+                  color={"transparent"}
                   onClick={() => navigate(item.path)}
+                  sx={{
+                    background:
+                      location.pathname === item.path
+                        ? theme.palette.primary.main
+                        : "transparent",
+                    color:
+                      location.pathname === item.path ? "white" : "inherit",
+                    transition: `box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+                      color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms`,
+                    "&:hover": {
+                      color: theme.palette.secondary.main,
+                    },
+                  }}
                 >
                   <Typography variant="body1" fontWeight={500}>
                     {item.label}
@@ -158,7 +180,22 @@ const Header = () => {
               ) : (
                 <>
                   {/* 로그인 버튼 */}
-                  <Button variant="outlined" onClick={() => navigate("/login")}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => navigate("/login")}
+                    sx={{
+                      bgcolor:
+                        location.pathname === "/login"
+                          ? theme.palette.primary.main
+                          : "inherit",
+                      color:
+                        location.pathname === "/login" ? "white" : "inherit",
+                      "&:hover": {
+                        bgcolor: theme.palette.primary.main,
+                        color: "white",
+                      },
+                    }}
+                  >
                     <Typography variant="body1" fontWeight={500}>
                       로그인
                     </Typography>
@@ -166,8 +203,20 @@ const Header = () => {
 
                   {/* 회원가입 버튼 */}
                   <Button
-                    variant="contained"
+                    variant="outlined"
                     onClick={() => navigate("/signup")}
+                    sx={{
+                      bgcolor:
+                        location.pathname === "/signup"
+                          ? theme.palette.primary.main
+                          : "inherit",
+                      color:
+                        location.pathname === "/signup" ? "white" : "inherit",
+                      "&:hover": {
+                        bgcolor: theme.palette.primary.main,
+                        color: "white",
+                      },
+                    }}
                   >
                     <Typography variant="body1" fontWeight={500}>
                       회원가입
