@@ -10,40 +10,27 @@ from rag_pipeline.roadmap.models import Roadmap
 class CurriculumGenerationRequest(BaseModel):
     """커리큘럼 생성 요청 (학생 맞춤형)"""
     
-    # 필수 필드
-    student_id: str = Field(..., description="학생 고유 ID")
-    subject: str = Field(..., description="학습 과목 (예: '수학', '영어', '과학')")
-    
-    # 선택 필드
-    grade: Optional[str] = Field(
-        None, 
-        description="학년 정보 (예: '중학교 2학년')"
-    )
-    study_duration: Optional[str] = Field(
-        None, 
-        description="희망 학습 기간 (예: '3개월', '6개월', '1년')"
-    )
+    subject: str = Field(..., description="학습 과목 (예: '수학', '영어')")
+    grade: str = Field(..., description="학년 정보 (예: '중학교 3학년')")
 
 
 class CurriculumNode(BaseModel):
     """커리큘럼 로드맵의 단일 노드"""
     
-    id: int = Field(..., description="노드 ID (1부터 시작)")
-    title: str = Field(..., description="노드 제목 (예: '일차방정식 기초')")
+    title: str = Field(..., description="노드 제목")
     parent_id: Optional[int] = Field(None, description="부모 노드 ID (최상위는 null)")
-    is_optional: bool = Field(False, description="선택 과정 여부")
     category: str = Field(
         ..., 
-        description="노드 카테고리: 'subject' | 'stage' | 'topic' | 'skill'"
+        description="노드 카테고리: 'subject'(과목) | 'title'(단원) | 'topic'(단원 관련 정보)"
     )
-    duration: str = Field(..., description="예상 소요 기간 (예: '1주', '2주', '1개월')")
-    description: str = Field(..., description="노드 상세 설명 (1-2문장)")
+    duration: str = Field(..., description="예상 소요 기간 (예: '2주', '1개월')")
+    description: str = Field(..., description="노드 상세 설명")
     
     # 검증
     @field_validator('category')
     @classmethod
     def validate_category(cls, v):
-        allowed = {'subject', 'stage', 'topic', 'skill'}
+        allowed = {'subject', 'title', 'topic'}
         if v not in allowed:
             raise ValueError(f"category must be one of {allowed}")
         return v
@@ -52,18 +39,12 @@ class CurriculumNode(BaseModel):
 class CurriculumGenerationResponse(BaseModel):
     """커리큘럼 생성 응답"""
     
-    curriculum_id: str = Field(..., description="커리큘럼 고유 ID")
-    student_id: str = Field(..., description="학생 ID")
     subject: str = Field(..., description="학습 과목")
-    grade: Optional[str] = Field(None, description="학년")
-    
-    # 로드맵 데이터
-    roadmap_nodes: List[CurriculumNode] = Field(..., description="로드맵 노드 배열")
-    
-    # 메타데이터
+    grade: str = Field(..., description="학년")
+    roadmap_nodes: List[CurriculumNode] = Field(..., description="로드맵 노드 배열 (계층 구조)")
     metadata: Dict[str, Any] = Field(
-        default_factory=dict,
-        description="추가 정보 (total_nodes, estimated_duration 등)"
+        ...,
+        description="메타 정보 (total_nodes, estimated_duration)"
     )
 
 
@@ -80,20 +61,16 @@ class MultipleChoiceQuestion(BaseModel):
 
 
 class ProblemGenerationRequest(BaseModel):
-    query: str = Field(..., description="Keyword or description for the desired question theme")
-    grade: Optional[str] = Field(default=None, description="Target grade context")
-    subject: Optional[str] = Field(default=None, description="Target subject context")
-    sub_subject: Optional[str] = Field(default=None, description="Optional sub subject filter")
-    num_questions: int = Field(default=3, ge=1, le=10)
-    num_choices: int = Field(default=4, ge=3, le=5)
-    retrieval_limit: int = Field(default=5, ge=1, le=10)
+    title: str = Field(..., description="원하는 문제 주제에 대한 키워드 또는 설명")
+    grade: Optional[str] = Field(default=None, description="대상 학년 컨텍스트 (예: '중학교 2학년')")
+    subject: Optional[str] = Field(default=None, description="대상 과목 컨텍스트 (예: '국어', '수학')")
+    num_questions: int = Field(default=3, ge=1, le=10, description="생성할 문제 수 (기본값: 3, 범위: 1-10)")
 
 
 class ProblemSetMetadata(BaseModel):
-    grade: Optional[str]
-    subject: Optional[str]
-    sub_subject: Optional[str]
-    source_ids: List[str] = Field(default_factory=list)
+    title: Optional[str] = Field(None, description="세부 과목")
+    grade: Optional[str] = Field(None, description="학년")
+    subject: Optional[str] = Field(None, description="과목")
 
 
 class ProblemGenerationResponse(BaseModel):
@@ -113,17 +90,19 @@ class ChatResponse(BaseModel):
 class CurriculumUpdateRequest(BaseModel):
     """커리큘럼 업데이트 요청 (평가 결과 기반)"""
     
-    curriculum_id: str = Field(..., description="업데이트할 커리큘럼 ID")
+    subject: str = Field(..., description="학습 과목")
     grade: str = Field(..., description="학년")
-    subject: str = Field(..., description="과목")
-    assessment_results: Dict[str, Any] = Field(..., description="평가 결과 데이터")
+    assessment_results: Dict[str, Any] = Field(..., description="성취도 평가 결과 데이터")
+    roadmap_nodes: List[CurriculumNode] = Field(..., description="노드 배열 (계층 구조)")
 
 
 class CurriculumUpdateResponse(BaseModel):
     """커리큘럼 업데이트 응답"""
     
-    curriculum_id: str = Field(..., description="커리큘럼 ID")
-    changes_summary: str = Field(..., description="변경 사항 요약")
+    subject: str = Field(..., description="과목")
+    grade: str = Field(..., description="학년")
+    roadmap_nodes: List[CurriculumNode] = Field(..., description="노드 배열 (계층 구조)")
+    metadata: Dict[str, Any] = Field(..., description="메타 정보 (total_nodes, estimated_duration)")
 
 
 class FeedbackRequest(BaseModel):

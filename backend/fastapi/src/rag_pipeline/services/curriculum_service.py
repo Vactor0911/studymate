@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import json
 import logging
-import uuid
-from datetime import datetime
 from typing import Any, Dict, List
 
 from rag_pipeline.api.schemas import (
@@ -14,8 +12,6 @@ from rag_pipeline.api.schemas import (
     CurriculumUpdateResponse,
 )
 from rag_pipeline.prompting.loader import PromptLoader
-from rag_pipeline.roadmap.builder import build_roadmap_from_contexts
-from rag_pipeline.roadmap.models import Roadmap
 from rag_pipeline.retrieval.pgvector import retrieve_passages
 from rag_pipeline.services.openai_client import get_openai_client
 
@@ -53,8 +49,7 @@ class CurriculumService:
         
         user_prompt = prompt_template["user"].format(
             subject=request.subject,
-            grade=request.grade or "미지정",
-            study_duration=request.study_duration or "6개월",
+            grade=request.grade,
         )
         
         # 컨텍스트를 프롬프트에 추가
@@ -80,26 +75,17 @@ class CurriculumService:
         # 5. 노드 검증 및 변환
         roadmap_nodes = [CurriculumNode(**node) for node in nodes_data]
         
-        # 최소 노드 수 검증
-        if len(roadmap_nodes) < 30:
-            logger.warning(
-                f"Generated only {len(roadmap_nodes)} nodes, expected at least 30"
-            )
+        # 6. 메타데이터 생성
+        # 예상 기간 계산 (첫 번째 노드의 duration 사용 또는 기본값)
+        estimated_duration = roadmap_nodes[0].duration if roadmap_nodes else "6개월"
         
-        # 6. 메타데이터 생성 (검색된 자료 정보 포함)
         metadata = {
             "total_nodes": len(roadmap_nodes),
-            "estimated_duration": request.study_duration or "6개월",
-            "retrieved_contexts": len(contexts),
-            "model_version": "gpt-4",
+            "estimated_duration": estimated_duration,
         }
         
         # 7. 응답 생성
-        curriculum_id = f"curr-{uuid.uuid4()}"
-        
         return CurriculumGenerationResponse(
-            curriculum_id=curriculum_id,
-            student_id=request.student_id,
             subject=request.subject,
             grade=request.grade,
             roadmap_nodes=roadmap_nodes,
@@ -120,11 +106,7 @@ class CurriculumService:
             검색된 학습 자료 목록
         """
         # 검색 쿼리 구성
-        query_parts = [
-            request.subject,
-            request.grade or "",
-        ]
-        query = " ".join(part for part in query_parts if part).strip()
+        query = f"{request.subject} {request.grade}"
         
         try:
             contexts = self.retriever(
@@ -167,7 +149,7 @@ class CurriculumService:
         
         return "\n".join(formatted_parts)
 
-    def update_curriculum(self, request: CurriculumUpdateRequest) -> CurriculumUpdateResponse:
+    async def update_curriculum(self, request: CurriculumUpdateRequest) -> CurriculumUpdateResponse:
         """
         성취도 평가 결과를 바탕으로 커리큘럼을 업데이트합니다.
         
@@ -177,7 +159,7 @@ class CurriculumService:
         Returns:
             업데이트된 커리큘럼 정보
         """
-        logger.info(f"Updating curriculum {request.curriculum_id} based on assessment results")
+        logger.info(f"Updating curriculum for {request.subject} {request.grade} based on assessment results")
         
         # 평가 결과 분석
         assessment_results = request.assessment_results
@@ -192,21 +174,27 @@ class CurriculumService:
             subject=request.subject,
         )
         
-        # 새로운 로드맵 생성
-        updated_roadmap = build_roadmap_from_contexts(
-            grade=request.grade,
-            subject=request.subject,
+        # 기존 노드에 새로운 노드 추가/수정
+        updated_nodes = self._update_roadmap_nodes(
+            existing_nodes=request.roadmap_nodes,
+            weak_areas=weak_areas,
             contexts=contexts,
         )
         
-        # 변경 사항 요약 생성
-        changes_summary = self._generate_changes_summary(weak_areas, contexts)
+        # 메타데이터 생성
+        estimated_duration = updated_nodes[0].duration if updated_nodes else "6개월"
+        metadata = {
+            "total_nodes": len(updated_nodes),
+            "estimated_duration": estimated_duration,
+        }
         
-        logger.info(f"Successfully updated curriculum {request.curriculum_id}")
+        logger.info(f"Successfully updated curriculum for {request.subject} {request.grade}")
         
         return CurriculumUpdateResponse(
-            curriculum_id=request.curriculum_id,
-            changes_summary=changes_summary,
+            subject=request.subject,
+            grade=request.grade,
+            roadmap_nodes=updated_nodes,
+            metadata=metadata,
         )
 
     def _analyze_weak_areas(self, assessment_results: Dict[str, Any]) -> list[str]:
@@ -269,31 +257,42 @@ class CurriculumService:
         
         return all_contexts[:limit]
 
-    def _generate_changes_summary(
+    def _update_roadmap_nodes(
         self,
+        existing_nodes: List[CurriculumNode],
         weak_areas: list[str],
         contexts: list[Dict[str, Any]],
-    ) -> str:
+    ) -> List[CurriculumNode]:
         """
-        커리큘럼 변경 사항 요약을 생성합니다.
+        기존 로드맵 노드를 평가 결과에 따라 업데이트합니다.
         
         Args:
+            existing_nodes: 기존 노드 목록
             weak_areas: 약점 영역 목록
             contexts: 추가된 학습 자료
             
         Returns:
-            변경 사항 요약 텍스트
+            업데이트된 노드 목록
         """
-        summary_parts = []
+        # 기존 노드를 복사하여 시작
+        updated_nodes = existing_nodes.copy()
         
-        if weak_areas:
-            areas_text = ", ".join(weak_areas)
-            summary_parts.append(f"약점 영역 ({areas_text})에 대한 보충 학습 자료를 추가했습니다.")
+        # 약점 영역에 대한 새로운 노드 추가 (간단한 구현)
+        if weak_areas and contexts:
+            # 첫 번째 노드의 parent_id를 사용 (일반적으로 1)
+            parent_id = 1
+            
+            for area in weak_areas[:3]:  # 최대 3개 영역만 추가
+                new_node = CurriculumNode(
+                    title=f"{area} 보충 학습",
+                    parent_id=parent_id,
+                    category="topic",
+                    duration="1주",
+                    description=f"{area}에 대한 추가 학습이 필요합니다.",
+                )
+                updated_nodes.append(new_node)
         
-        if contexts:
-            summary_parts.append(f"총 {len(contexts)}개의 추가 학습 자료가 포함되었습니다.")
-        
-        return " ".join(summary_parts) if summary_parts else "커리큘럼이 업데이트되었습니다."
+        return updated_nodes
 
 
 def get_curriculum_service() -> CurriculumService:
