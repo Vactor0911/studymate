@@ -27,6 +27,16 @@ class Settings(BaseSettings):
     openai_model: str = Field(alias="OPENAI_MODEL")
     database_url: str = Field(alias="DATABASE_URL")
     environment: str = Field(alias="ENVIRONMENT")
+    huggingface_token: str | None = Field(default=None, alias="HUGGINGFACE_TOKEN")
+    naver_client_id: str | None = Field(default=None, alias="NAVER_CLIENT_ID")
+    naver_client_secret: str | None = Field(default=None, alias="NAVER_CLIENT_SECRET")
+    naver_ocr_secret: str | None = Field(default=None, alias="NAVER_OCR_SECRET")
+    naver_ocr_endpoint: str = Field(
+        default="https://naveropenapi.apigw.ntruss.com/vision/v2/general",
+        alias="NAVER_OCR_ENDPOINT",
+    )
+    ocr_provider: str = Field(default="naver", alias="OCR_PROVIDER")
+    openai_vision_model: str | None = Field(default=None, alias="OPENAI_VISION_MODEL")
 
     @property
     def existing_data_roots(self) -> List[Path]:

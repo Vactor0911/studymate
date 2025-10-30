@@ -119,3 +119,25 @@ class FeedbackResponse(BaseModel):
     strengths: List[str] = Field(..., description="장점 목록 (잘한 점)")
     weaknesses: List[str] = Field(..., description="단점 목록 (개선 필요한 점)")
     recommendations: List[str] = Field(..., description="개선 방안 목록 (구체적인 학습 조언)")
+
+
+class OCRSolveRequest(BaseModel):
+    """OCR 기반 문제 풀이 요청"""
+
+    image_name: str = Field(..., description="DATA_ROOTS 기준 상대 경로 또는 절대 경로 이미지 파일명")
+
+
+class OCRSolutionDetail(BaseModel):
+    """OCR 텍스트 기반 분석 및 풀이 결과"""
+
+    problem_analysis: str = Field(..., description="문제 요약 및 핵심 요구 사항")
+    solution_steps: List[str] = Field(..., description="풀이 과정을 단계별로 정리한 목록")
+    final_answer: str = Field(..., description="최종 정답 또는 결론")
+    concept_review: List[str] = Field(..., description="관련 핵심 개념 정리 (3~5개)")
+
+
+class OCRSolveResponse(OCRSolutionDetail):
+    """OCR 문제 풀이 응답"""
+
+    image_name: str = Field(..., description="분석한 이미지 파일명")
+    extracted_text: str = Field(..., description="OCR로 추출한 원문 텍스트")

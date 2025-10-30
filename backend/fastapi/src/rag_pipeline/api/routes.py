@@ -12,6 +12,7 @@ from pydantic import BaseModel
 from rag_pipeline.services.chat_service import ChatService, get_chat_service
 from rag_pipeline.services.curriculum_service import CurriculumService, get_curriculum_service
 from rag_pipeline.services.feedback_service import FeedbackService, get_feedback_service
+from rag_pipeline.services.ocr_service import OCRProblemService, get_ocr_problem_service
 from rag_pipeline.services.problem_service import ProblemGenerationService, get_problem_service
 
 from .schemas import (
@@ -23,6 +24,8 @@ from .schemas import (
     CurriculumUpdateResponse,
     FeedbackRequest,
     FeedbackResponse,
+    OCRSolveRequest,
+    OCRSolveResponse,
     ProblemGenerationRequest,
     ProblemGenerationResponse,
 )
@@ -135,3 +138,27 @@ async def generate_feedback(
     except Exception as exc:  # pragma: no cover - defensive logging
         logger.exception("Failed to generate feedback")
         raise HTTPException(status_code=500, detail="Failed to generate feedback") from exc
+
+
+@router.post(
+    "/ocr/solve",
+    response_model=OCRSolveResponse,
+    response_class=PlainTextResponse,
+)
+async def solve_ocr_problem(
+    payload: OCRSolveRequest,
+    service: OCRProblemService = Depends(get_ocr_problem_service),
+) -> PlainTextResponse:
+    """이미지 기반 OCR 문제 풀이"""
+    try:
+        result = await service.solve(payload)
+        return _json_text_response(result, "ocr-solution.txt")
+    except FileNotFoundError as exc:
+        logger.warning("OCR image not found: %s", payload.image_name)
+        raise HTTPException(status_code=404, detail="이미지 파일을 찾을 수 없습니다.") from exc
+    except RuntimeError as exc:
+        logger.exception("OCR service misconfiguration")
+        raise HTTPException(status_code=503, detail="OCR 서비스가 아직 설정되지 않았습니다.") from exc
+    except Exception as exc:  # pragma: no cover - defensive logging
+        logger.exception("Failed to process OCR request for image=%s", payload.image_name)
+        raise HTTPException(status_code=500, detail="OCR 기반 문제 풀이에 실패했습니다.") from exc
