@@ -124,3 +124,6 @@ export const AssessmentDataAtom = atom({
     },
   ],
 } as AssessmentDetailType);
+
+export const userSelectAtom = atom([0, 2, 1, 2, 1, 4, 1, 2, 0, 1, 3]);
+export const answerAtom = atom([0, 3, 2, 2, 1, 0, 1, 2, 4, 3, 3]);
