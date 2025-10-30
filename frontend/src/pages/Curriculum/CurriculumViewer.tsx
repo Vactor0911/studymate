@@ -60,8 +60,8 @@ const CurriculumViewer = ({
   const [roadmapData, setRoadmapData] = useState<NodeData[]>([
     { "id": 1, "title": "웹 애플리케이션 개발자", "parent_id": null, "isOptional": false, "category": "job" },
     { "id": 2, "title": "기초", "parent_id": 1, "isOptional": false, "category": "stage" },
-    { "id": 3, "title": "HTML/CSS", "parent_id": 2, "isOptional": false, "category": "skill" },
-    { "id": 4, "title": "JavaScript 기초", "parent_id": 2, "isOptional": false, "category": "skill" },
+    { "id": 3, "title": "기본 연산과 방정식을 학습합니다", "parent_id": 2, "isOptional": false, "category": "skill" },
+    { "id": 4, "title": "관동별곡의 장면을 시각화하고 친구들과 감상을 나눕니다.", "parent_id": 2, "isOptional": false, "category": "skill" },
     { "id": 5, "title": "버전 관리(Git)", "parent_id": 2, "isOptional": false, "category": "skill" },
     { "id": 6, "title": "웹 기초", "parent_id": 2, "isOptional": false, "category": "skill" },
     { "id": 7, "title": "핵심", "parent_id": 2, "isOptional": false, "category": "stage" },
@@ -160,6 +160,8 @@ const CurriculumViewer = ({
                   css={{
                     wordBreak: "keep-all",
                     textWrap: "balance",
+                    textAlign: "left",
+                    marginLeft: "0.5em",
                   }}
                 >
                   {node.title}
