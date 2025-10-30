@@ -20,18 +20,18 @@ type CurriculumType = {
 const CurriculumData = [
   {
     createdAt: "2025 / 10 / 30",
-    subject: "수학",
-    grade: "중학교 3학년",
-    detail: "기본 연산과 방정식을 학습합니다",
+    subject: "국어",
+    grade: "고등학교 1학년",
+    detail: "현대시의 정의, 특징, 역사를 이해하고 기본 분석 능력을 기른다.",
   },
   {
-    createdAt: "2025 / 10 / 30",
+    createdAt: "2025 / 10 / 31",
     subject: "수학",
-    grade: "중학교 3학년",
-    detail: "기본 연산과 방정식을 학습합니다",
+    grade: "고등학교 1학년",
+    detail: "기본적인 수의 계산과 식의 정리 능력을 기른다.",
   },
   {
-    createdAt: "2025 / 10 / 30",
+    createdAt: "2025 / 10 / 31",
     subject: "수학",
     grade: "중학교 3학년",
     detail: "기본 연산과 방정식을 학습합니다",
