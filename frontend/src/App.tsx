@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Login, Main, Signup } from "./pages";
+import { Curriculum, Login, Main, Signup } from "./pages";
 import Header from "./components/Header";
 import { useEffect } from "react";
 import { bootstrapAuth } from "./services/auth";
@@ -17,6 +17,7 @@ const App = () => {
         <Route path="/" element={<Main />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/curriculum" element={<Curriculum />} />
       </Routes>
     </BrowserRouter>
   );
