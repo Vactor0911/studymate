@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { config } from "./config/index.js";
+import { authRouter, userRouter } from "./routes/index.js";
 
 const app = express();
 app.use(express.json());
@@ -17,6 +18,10 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// API 라우팅
+app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
 
 // 헬스체크
 app.get("/health", (_req, res) => res.json({ ok: true }));
