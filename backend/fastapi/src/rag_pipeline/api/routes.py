@@ -3,7 +3,11 @@
 import asyncio
 import json
 import logging
+from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import PlainTextResponse
+from pydantic import BaseModel
 
 from rag_pipeline.services.chat_service import ChatService, get_chat_service
 from rag_pipeline.services.curriculum_service import CurriculumService, get_curriculum_service
@@ -28,14 +32,31 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["rag"])
 
 
-@router.post("/curriculum/generate", response_model=CurriculumGenerationResponse)
+def _json_text_response(payload: BaseModel | dict[str, Any], filename: str) -> PlainTextResponse:
+    if isinstance(payload, BaseModel):
+        data = payload.model_dump()
+    else:
+        data = payload
+
+    content = json.dumps(data, ensure_ascii=False, indent=2)
+
+    headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
+    return PlainTextResponse(content=content, media_type="text/plain; charset=utf-8", headers=headers)
+
+
+@router.post(
+    "/curriculum/generate",
+    response_model=CurriculumGenerationResponse,
+    response_class=PlainTextResponse,
+)
 async def generate_curriculum(
     payload: CurriculumGenerationRequest,
     service: CurriculumService = Depends(get_curriculum_service),
-) -> CurriculumGenerationResponse:
+) -> PlainTextResponse:
     """학생 맞춤형 커리큘럼 생성"""
     try:
-        return await service.generate_curriculum(payload)
+        result = await service.generate_curriculum(payload)
+        return _json_text_response(result, "curriculum.txt")
     except json.JSONDecodeError as exc:
         logger.exception("Failed to parse LLM response for student=%s", payload.student_id)
         raise HTTPException(status_code=502, detail="LLM 응답 형식을 파싱하지 못했습니다") from exc
@@ -47,13 +68,18 @@ async def generate_curriculum(
         raise HTTPException(status_code=500, detail="커리큘럼 생성 실패") from exc
 
 
-@router.post("/assessment/generate", response_model=ProblemGenerationResponse)
+@router.post(
+    "/assessment/generate",
+    response_model=ProblemGenerationResponse,
+    response_class=PlainTextResponse,
+)
 async def generate_problem_set(
     payload: ProblemGenerationRequest,
     service: ProblemGenerationService = Depends(get_problem_service),
-) -> ProblemGenerationResponse:
+) -> PlainTextResponse:
     try:
-        return await asyncio.to_thread(service.generate, payload)
+        result = await asyncio.to_thread(service.generate, payload)
+        return _json_text_response(result, "problems.txt")
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except Exception as exc:  # pragma: no cover - defensive logging
@@ -61,39 +87,50 @@ async def generate_problem_set(
         raise HTTPException(status_code=500, detail="Failed to generate problem set") from exc
 
 
-@router.post("/chat", response_model=ChatResponse)
+@router.post("/chat", response_model=ChatResponse, response_class=PlainTextResponse)
 async def create_chat_turn(
     payload: ChatRequest,
     service: ChatService = Depends(get_chat_service),
-) -> ChatResponse:
+) -> PlainTextResponse:
     try:
-        return await service.generate_reply(payload)
+        result = await service.generate_reply(payload)
+        return _json_text_response(result, "chat.txt")
     except Exception as exc:  # pragma: no cover - defensive logging
         logger.exception("Failed to generate chat reply")
         raise HTTPException(status_code=500, detail="Failed to generate chat reply") from exc
 
 
-@router.post("/curriculum/update", response_model=CurriculumUpdateResponse)
+@router.post(
+    "/curriculum/update",
+    response_model=CurriculumUpdateResponse,
+    response_class=PlainTextResponse,
+)
 async def update_curriculum(
     payload: CurriculumUpdateRequest,
     service: CurriculumService = Depends(get_curriculum_service),
-) -> CurriculumUpdateResponse:
+) -> PlainTextResponse:
     """평가 결과 기반 커리큘럼 업데이트"""
     try:
-        return await asyncio.to_thread(service.update_curriculum, payload)
+        result = await asyncio.to_thread(service.update_curriculum, payload)
+        return _json_text_response(result, "curriculum-update.txt")
     except Exception as exc:  # pragma: no cover - defensive logging
         logger.exception("Failed to update curriculum for curriculum_id=%s", payload.curriculum_id)
         raise HTTPException(status_code=500, detail="커리큘럼 업데이트 실패") from exc
 
 
-@router.post("/feedback/generate", response_model=FeedbackResponse)
+@router.post(
+    "/feedback/generate",
+    response_model=FeedbackResponse,
+    response_class=PlainTextResponse,
+)
 async def generate_feedback(
     payload: FeedbackRequest,
     service: FeedbackService = Depends(get_feedback_service),
-) -> FeedbackResponse:
+) -> PlainTextResponse:
     """AI 기반 학습 피드백 생성"""
     try:
-        return await service.generate_feedback(payload)
+        result = await service.generate_feedback(payload)
+        return _json_text_response(result, "feedback.txt")
     except Exception as exc:  # pragma: no cover - defensive logging
         logger.exception("Failed to generate feedback")
         raise HTTPException(status_code=500, detail="Failed to generate feedback") from exc
