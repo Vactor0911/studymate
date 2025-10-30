@@ -8,6 +8,7 @@ import {
   assessmentRouter,
   curriculumRouter
 } from "./routes/index.js";
+import { v4 as uuidv4 } from "uuid"
 
 const app = express();
 app.use(express.json());
@@ -32,6 +33,9 @@ app.use("/api/curriculums", curriculumRouter);
 
 // 헬스체크
 app.get("/health", (_req, res) => res.json({ ok: true }));
+
+const uuid = uuidv4();
+console.log(uuid);
 
 app.listen(config.port, () => {
   console.log(`[SERVER] 서버가 ${config.port}번 포트에서 실행 중입니다.`);

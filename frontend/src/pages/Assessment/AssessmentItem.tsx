@@ -1,4 +1,5 @@
 import { Button, Stack, Typography, useTheme } from "@mui/material";
+import { useNavigate } from "react-router";
 
 interface AssessmentItemProps {
   bgcolor: string;
@@ -8,6 +9,7 @@ const AssessmentItem = (props: AssessmentItemProps) => {
   const { bgcolor } = props;
 
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <Stack width="32%" gap={1}>
@@ -85,6 +87,9 @@ const AssessmentItem = (props: AssessmentItemProps) => {
             px: 1.5,
             borderRadius: 1,
           }}
+          onClick={() =>
+            navigate("result/c770fc8a-df14-4989-9788-be1fc333dfa9")
+          }
         >
           결과 보기
         </Button>
@@ -95,6 +100,9 @@ const AssessmentItem = (props: AssessmentItemProps) => {
             px: 1.5,
             borderRadius: 1,
           }}
+          onClick={() =>
+            navigate("/result/2bcb77f4-84be-4776-970c-e3132bbd249e")
+          }
         >
           성적표 발급
         </Button>
