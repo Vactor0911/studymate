@@ -129,7 +129,7 @@ const Header = () => {
             >
               {[
                 { label: "커리큘럼", path: "/curriculum" },
-                { label: "성취도 평가", path: "/exam" },
+                { label: "성취도 평가", path: "/assessment" },
                 { label: "학습 현황", path: "/course" },
               ].map((item) => (
                 <Button
