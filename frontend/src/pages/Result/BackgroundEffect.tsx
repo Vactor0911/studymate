@@ -88,6 +88,7 @@ const BackgroundEffect = () => {
         src={AnalyzeIcon1}
         position="absolute"
         sx={{
+          opacity: 0,
           animation: `1s ease-in-out forwards ${Animation1}`,
         }}
         zIndex={-1}
@@ -97,6 +98,7 @@ const BackgroundEffect = () => {
         src={AnalyzeIcon2}
         position="absolute"
         sx={{
+          opacity: 0,
           animation: `1s ease-in-out 0.25s forwards ${Animation2}`,
         }}
         zIndex={-1}
@@ -106,6 +108,7 @@ const BackgroundEffect = () => {
         src={AnalyzeIcon3}
         position="absolute"
         sx={{
+          opacity: 0,
           animation: `1s ease-in-out 0.1s forwards ${Animation3}`,
         }}
         zIndex={-1}
@@ -115,6 +118,7 @@ const BackgroundEffect = () => {
         src={AnalyzeIcon4}
         position="absolute"
         sx={{
+          opacity: 0,
           animation: `1s ease-in-out forwards ${Animation4}`,
         }}
         zIndex={-1}
@@ -124,6 +128,7 @@ const BackgroundEffect = () => {
         src={AnalyzeIcon5}
         position="absolute"
         sx={{
+          opacity: 0,
           animation: `1s ease-in-out 0.2s forwards ${Animation5}`,
         }}
         zIndex={-1}

@@ -110,11 +110,15 @@ const Result = () => {
               p={3}
               bgcolor={"#f4f4f4"}
               borderRadius={3}
+              position="relative"
             >
               <Typography
                 variant="subtitle2"
                 alignSelf="flex-start"
                 fontWeight={500}
+                position="absolute"
+                top="16px"
+                left="16px"
               >
                 총 문제 수 / 정답 수
               </Typography>
@@ -162,6 +166,7 @@ const Result = () => {
                 },
               ].map((item, index) => (
                 <MarkedItem
+                  key={`marked-item-${index}`}
                   width="100%"
                   height="calc(100% / 6)"
                   index={index + 1}
