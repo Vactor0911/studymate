@@ -78,7 +78,7 @@ const AuthedMain = () => {
               {/* 우측 컨테이너 */}
               <Stack height="100%" justifyContent="space-between">
                 {/* 상단 안내 컨테이너 */}
-                <Stack gap={1}>
+                <Stack gap={1} mt={3}>
                   {/* 안내 문구 */}
                   <Typography variant="subtitle1" fontWeight="bold">
                     <span

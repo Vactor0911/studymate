@@ -61,6 +61,7 @@ const BarButton = (props: BarButtonProps) => {
           position="relative"
           sx={{
             transform: "rotateX(55deg) rotateZ(45deg)",
+            transition: "all 0.25s ease-in-out",
           }}
         >
           {/* 기둥 하단 */}
@@ -72,6 +73,7 @@ const BarButton = (props: BarButtonProps) => {
             sx={{
               filter: "brightness(85%)",
               boxShadow: `24px 24px 16px 8px ${color}BB`,
+              transition: "all 0.25s ease-in-out",
             }}
           />
         </Stack>
@@ -87,7 +89,7 @@ const BarButton = (props: BarButtonProps) => {
           sx={{
             transform: "translate(-50%, -65px)",
             filter: "brightness(85%)",
-            transition: "height 0.25s ease-in-out",
+            transition: "all 0.25s ease-in-out",
           }}
         />
 
@@ -113,6 +115,7 @@ const BarButton = (props: BarButtonProps) => {
             alignItems="center"
             sx={{
               transform: "rotateX(-55deg) rotateZ(-45deg)",
+              transition: "all 0.25s ease-in-out",
             }}
           >
             <Typography

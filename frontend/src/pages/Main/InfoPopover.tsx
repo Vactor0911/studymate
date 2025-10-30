@@ -26,7 +26,7 @@ const InfoPopover = (props: InfoPopoverProps) => {
       sx={{
         borderRadius: 3,
         overflow: "hidden",
-        transform: "translateX(50px)",
+        transform: "translate(25px, 20px)",
       }}
       slotProps={{
         paper: {
