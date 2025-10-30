@@ -29,10 +29,14 @@ class AssessmentModel {
     } 
     // 시험 결과를 업데이트합니다.
     static async updateExamResult(testResult, curriculum_id) {
-        await dbPool.execute(
+        const result = await dbPool.execute(
             "UPDATE assessment SET test_result = ? WHERE curriculum_id = ?",
             [JSON.stringify(testResult), curriculum_id]
-        ); 
+        );
+        if (result.affectedRows === 0) {
+            throw new Error(`curriculum_id ${curriculum_id}에 해당하는 데이터를 찾을 수 없습니다.`);
+        }
+        return result;
     }
     // curriculumId로 평가 결과를 가져옵니다.
     static async getTestResultByCurriculumId(curriculumId) {
