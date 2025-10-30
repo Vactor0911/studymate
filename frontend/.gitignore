@@ -1,0 +1,26 @@
+# Logs
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build output
+dist
+dist-ssr
+
+# Dependencies / caches
+node_modules
+.vite
+.eslintcache
+*.tsbuildinfo
+
+# Local env
+.env
+.env.local
+.env.*.local
+*.local
+
+# Coverage
+coverage
