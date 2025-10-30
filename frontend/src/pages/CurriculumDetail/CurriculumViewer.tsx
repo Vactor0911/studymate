@@ -482,7 +482,6 @@ const CurriculumViewer = ({
           childrenMap[parentKey].push(`node-${node.id}`);
         }
       });
-      console.log(childrenMap);
 
       // 단계 카테고리 노드 찾기
       const stageNodes = nodes.filter((node) => {
@@ -633,6 +632,7 @@ const CurriculumViewer = ({
           reactFlowInstance.current = instance;
         }}
         onNodeClick={handleNodeClick}
+        onLoadedData={() => fitViewToNode("1")}
         disableKeyboardA11y
         nodesConnectable={false}
         nodesDraggable={false}

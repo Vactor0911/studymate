@@ -113,7 +113,6 @@ const Signup = () => {
       if (err instanceof AxiosError) {
         if (err.response?.status === 409) {
           const code = err.response.data.code;
-          console.log(code);
 
           if (code === "DUPLICATE_ID") {
             setErrors((prev) => ({
