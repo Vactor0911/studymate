@@ -5,8 +5,8 @@ import { config } from "./config/index.js";
 import {
   authRouter,
   userRouter,
-  problemRouter,
-  roadMapRouter,
+  assessmentRouter,
+  curriculumRouter
 } from "./routes/index.js";
 
 const app = express();
@@ -27,8 +27,8 @@ app.use(
 // API 라우팅
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
-app.use("/api/problems", problemRouter);
-app.use("/api/roadmaps", roadMapRouter);
+app.use("/api/assessments", assessmentRouter);
+app.use("/api/curriculums", curriculumRouter);
 
 // 헬스체크
 app.get("/health", (_req, res) => res.json({ ok: true }));
