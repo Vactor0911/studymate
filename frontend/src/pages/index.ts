@@ -1,4 +1,4 @@
-import Main from "./Main"
+import Main from "./Main";
 import Login from "./Login";
 import Signup from "./Signup";
 import Curriculum from "./Curriculum";
