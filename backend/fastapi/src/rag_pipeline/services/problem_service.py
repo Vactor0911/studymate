@@ -131,7 +131,7 @@ class ProblemGenerationService:
         params: ProblemGenerationRequest,
         contexts: Sequence[Dict[str, object]],
     ) -> str:
-        labels = list(range(1, params.num_choices + 1))
+        # 참고 자료 포맷팅
         context_lines = []
         for idx, item in enumerate(contexts[: params.retrieval_limit], start=1):
             achievements = ", ".join(item.get("achievement_codes") or [])
@@ -143,41 +143,25 @@ class ProblemGenerationService:
                 f"   요약: {snippet}"
             )
 
-        label_preview = ", ".join(str(label) for label in labels)
+        # 메타데이터 준비
         source_ids = [str(item.get("source_name") or item.get("source_path")) for item in contexts]
         source_ids_json = json.dumps(source_ids, ensure_ascii=False)
 
-        instructions = f"""
+        # User 프롬프트 (동적 데이터만 포함)
+        prompt = f"""
 [참고 자료]
 {chr(10).join(context_lines)}
 
-[지시 사항]
-1. 위 참고 자료를 근거로 시험용 지문을 새롭게 작성하세요. 지문은 최소 10문장(약 350~450자)으로 구성하고, 주제와 사실 관계를 명확히 제시하세요.
-2. 지문을 기반으로 {params.num_questions}개의 객관식 문항을 출제하세요. 각 문항은 {params.num_choices}지선다({label_preview}) 형식이며, 보기 라벨은 숫자만 사용해야 합니다.
-3. 모든 문항은 지문 안의 근거에 의해 정답이 결정되도록 설계하고, 해설에는 해당 문장 또는 단락과 관련 성취기준 코드를 명시하세요.
-4. 출력은 오직 아래 JSON 한 객체만 허용됩니다.
-{{
-  "passage": "지문 본문",
-  "questions": [
-    {{
-      "question": "문항 본문",
-      "options": [
-        {{"label": 1, "text": "보기 1"}},
-        ...
-      ],
-      "answer": 1,
-      "explanation": "정답 근거와 성취기준"
-    }}
-  ],
-  "metadata": {{
-    "grade": "{params.grade or ''}",
-    "subject": "{params.subject or ''}",
-    "sub_subject": "{params.sub_subject or ''}",
-    "source_ids": {source_ids_json}
-  }}
-}}
+[요청 사항]
+- 문제 수: {params.num_questions}개
+- 보기 수: {params.num_choices}지선다
+- 학년: {params.grade or '미지정'}
+- 과목: {params.subject or '미지정'}
+- 세부 과목: {params.sub_subject or '미지정'}
+
+metadata의 source_ids는 다음과 같이 설정하세요: {source_ids_json}
 """
-        return instructions.strip()
+        return prompt.strip()
 
     @staticmethod
     def _validate_response(
