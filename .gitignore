@@ -22,3 +22,5 @@ lerna-debug.log*
 .env
 .env.local
 .env.*.local
+/backend/fastapi/src/rag_service/data/*
+/backend/fastapi/em.py

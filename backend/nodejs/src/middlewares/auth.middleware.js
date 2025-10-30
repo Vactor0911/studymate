@@ -16,6 +16,7 @@ export const requireAuth = (req, res, next) => {
 
     // 요청 객체에 사용자 정보 추가
     req.user = {
+      id: payload.userId || 1, // userId 추가
       uuid: payload.userUuid,
     };
     next();
@@ -23,3 +24,5 @@ export const requireAuth = (req, res, next) => {
     return res.status(401).json({ message: "유효하지 않은 토큰입니다." });
   }
 };
+
+export default requireAuth;

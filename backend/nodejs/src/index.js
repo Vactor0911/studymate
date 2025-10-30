@@ -6,7 +6,9 @@ import {
   authRouter,
   userRouter,
   assessmentRouter,
-  curriculumRouter
+  curriculumRouter,
+  feedbackRouter,
+  chatRouter
 } from "./routes/index.js";
 
 const app = express();
@@ -29,6 +31,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/assessments", assessmentRouter);
 app.use("/api/curriculums", curriculumRouter);
+app.use("/api/feedback", feedbackRouter);
+app.use("/api/chat", chatRouter);
 
 // 헬스체크
 app.get("/health", (_req, res) => res.json({ ok: true }));

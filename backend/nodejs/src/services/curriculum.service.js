@@ -1,19 +1,21 @@
-import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import { callFastAPI } from '../utils/fastapi.js';
 import CurriculumModel from '../models/curriculum.model.js';
 
 class CurriculumService {
     /**
      * 로드맵을 생성합니다.
      * @param {BigInt} userId - 사용자 ID
-     * @param {Enum} subject - 과목
-     * @param {Enum} grade - 학년
-     * @param {Enum} period - 기간
+     * @param {string} subject - 과목
+     * @param {string} grade - 학년
      * @returns {Object} 생성된 로드맵의 UUID
      */
-    static async createRoadMap(userId, subject, grade, learning_goal, study_duration) {
+    static async createRoadMap(userId, subject, grade) {
         try {
-            const roadmap = await this.callRagApi(userId, subject, learning_goal, grade, study_duration);
+            const roadmap = await callFastAPI('/api/curriculum/generate', {
+                subject,
+                grade
+            });
             const roadmapData = JSON.stringify(roadmap);
             const roadMapUuid = uuidv4();
             await CurriculumModel.createRoadMap(roadMapUuid, userId, roadmapData, roadmap.subject, roadmap.grade);
@@ -58,34 +60,36 @@ class CurriculumService {
             throw new Error(`로드맵 조회 중 오류가 발생했습니다: ${error.message}`);
         }
     }
-    static async callRagApi(userId, subject, grade, learning_goal, study_duration) {
+
+    /**
+     * 커리큘럼을 업데이트합니다.
+     * @param {BigInt} userId - 사용자 ID
+     * @param {string} subject - 과목
+     * @param {string} grade - 학년
+     * @param {object} assessment_results - 평가 결과
+     * @param {array} roadmap_nodes - 기존 로드맵 노드
+     * @returns {Object} 업데이트된 로드맵 UUID
+     */
+    static async updateCurriculum(userId, subject, grade, assessment_results, roadmap_nodes) {
         try {
-            const result = await this.callRagApi(userId, subject, grade, learning_goal, study_duration);
-            return result;
+            const updatedRoadmap = await callFastAPI('/api/curriculum/update', {
+                subject,
+                grade,
+                assessment_results,
+                roadmap_nodes
+            });
+            
+            // DB에 업데이트된 커리큘럼 저장 (새로운 버전으로)
+            const roadmapData = JSON.stringify(updatedRoadmap);
+            const roadMapUuid = uuidv4();
+            await CurriculumModel.createRoadMap(roadMapUuid, userId, roadmapData, updatedRoadmap.subject, updatedRoadmap.grade);
+            
+            return { roadMapUuid, updatedRoadmap };
         }
         catch (error) {
-            throw new Error(`RAG API 호출 중 오류가 발생했습니다: ${error.message}`);
+            throw new Error(`커리큘럼 업데이트 중 오류가 발생했습니다: ${error.message}`);
         }
     }
-    /**
-     * RAG API를 호출하여 로드맵 데이터를 생성합니다.
-     * @param {Enum} subject - 과목
-     * @param {Enum} grade - 학년
-     * @param {Enum} period - 기간
-     * @returns {Object} 생성된 로드맵 데이터
-     */
-    static async callRagApi(userId, subject, grade, learning_goal, study_duration) {
-        const RAG_API_URL = process.env.RAG_API_URL;
-        const response = await axios.post(`${RAG_API_URL}/api/curriculum/generate`, {
-            userId,
-            subject,
-            grade,
-            learning_goal,
-            study_duration
-        });
-        return response.data;
-    }
 }
-
 
 export default CurriculumService;

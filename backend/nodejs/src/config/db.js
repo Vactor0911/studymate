@@ -2,7 +2,7 @@ import MariaDB from "mariadb";
 import { config } from "./index.js";
 
 // MariaDB 연결
-export const dbPool = MariaDB.createPool({
+const dbPool = MariaDB.createPool({
   host: config.db.host,
   port: config.db.port,
   user: config.db.user,
@@ -20,3 +20,5 @@ dbPool
   .catch((err) => {
     console.error("MariaDB 연결 실패:", err);
   });
+
+export { dbPool };

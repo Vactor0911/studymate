@@ -1,19 +1,33 @@
-import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
+import { callFastAPI } from '../utils/fastapi.js';
 import AssessmentModel from '../models/assessment.model.js';
 
 class AssessmentService {
     /**
      * RoadMap에 문제를 생성합니다.
      * @param {BigInt} userId - 사용자 ID
-     * @param {BigInt} roadmapId - 로드맵 ID
+     * @param {BigInt} curriculumId - 커리큘럼 ID
+     * @param {string} title - 문제 주제
+     * @param {string} grade - 학년
+     * @param {string} subject - 과목
+     * @param {number} num_questions - 문제 개수 (기본 5)
      * @returns {Object} 생성된 문제의 UUID
      */
-    static async createProblems(userId, roadmapId) {
+    static async createProblems(userId, curriculumId, title, grade, subject, num_questions = 5) {
         try {
-            const problemsData = this.callRagApi(subject, grade);
+            const problemsData = await callFastAPI('/api/assessment/generate', {
+                title,
+                grade,
+                subject,
+                num_questions
+            });
+            
+            // 응답 구조: { passage, questions: [{question, options, answer, explanation}], metadata }
             const problems = JSON.stringify(problemsData);
-            const result = await AssessmentModel.create(userId, roadmapId, problems);
-            return result;
+            const assessmentUuid = uuidv4();
+            
+            await AssessmentModel.create(assessmentUuid, userId, curriculumId, problems);
+            return { assessmentUuid };
         }
         catch (error) {
             throw new Error(`문제 생성 실패: ${error.message}`);
@@ -101,19 +115,6 @@ class AssessmentService {
         catch (error) {
             throw new Error(`평가 결과 조회 실패: ${error.message}`);
         }   
-    }
-    static async callRagApi(query, grade, subject, sub_subject, num_questions, num_choices, retrieval_limit) {
-        const RAG_API_URL = process.env.RAG_API_URL;
-        const response = await axios.post(`${RAG_API_URL}/api/assessment/generate`, {
-            query,
-            grade,
-            subject,
-            sub_subject,
-            num_questions,
-            num_choices,
-            retrieval_limit
-        });
-        return response.data;
     }
 }
 

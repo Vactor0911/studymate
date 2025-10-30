@@ -3,19 +3,18 @@ import AssessmentService from "../services/assessment.service.js";
 class AssessmentController {
   static async createProblem(req, res) {
     try {
-      const userId = 1;
-      const roadmapId = req.body.roadmapId;
-      const result = await AssessmentService.createProblems(userId, roadmapId);
-      res
-        .status(201)
-        .json({
-          message: "문제가 성공적으로 생성되었습니다.",
-          problemUuid: result.problemUuid,
-        });
+      const userId = req.user.id; // JWT 미들웨어에서 추출
+      const { curriculumId, title, grade, subject, num_questions } = req.body;
+      
+      const result = await AssessmentService.createProblems(
+        userId, curriculumId, title, grade, subject, num_questions
+      );
+      res.status(201).json({
+        message: "문제가 성공적으로 생성되었습니다.",
+        assessmentUuid: result.assessmentUuid,
+      });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "서버 오류가 발생했습니다.", error: error.message });
+      res.status(500).json({ message: "서버 오류가 발생했습니다.", error: error.message });
     }
   }
 

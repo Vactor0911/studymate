@@ -1,24 +1,22 @@
 import { dbPool } from "../config/db.js";
-import { v4 as uuidv4 } from "uuid";
 
 class AssessmentModel {
     // 문제를 생성합니다
-    static async create(userId, roadmapId, problems) {
-        const problemUuid = uuidv4();
+    static async create(assessmentUuid, userId, curriculumId, problems) {
         await dbPool.execute(
             "INSERT INTO assessment (uuid, user_id, curriculum_id, assessment, created_at) VALUES (?, ?, ?, ?, ?)",
-            [problemUuid, userId, roadmapId, problems, new Date()]
+            [assessmentUuid, userId, curriculumId, problems, new Date()]
         );
-        return { problemUuid };
+        return { assessmentUuid };
     }
     // RoadMap과 UUID로 문제를 조회합니다.
     static async findByRoadmapAndUuid(roadmapId, assessmentUuid) {
-            const rows = await dbPool.execute(
-                "SELECT id, assessment FROM assessment WHERE curriculum_id = ? AND uuid = ?",
-                [roadmapId, assessmentUuid]
-            );
+        const rows = await dbPool.execute(
+            "SELECT id, assessment FROM assessment WHERE curriculum_id = ? AND uuid = ?",
+            [roadmapId, assessmentUuid]
+        );
         return rows;
-    }
+    } 
     // curriculumId로 가져옵니다.
     static async findByCurriculumId(curriculumId) {
         const rows = await dbPool.execute(
