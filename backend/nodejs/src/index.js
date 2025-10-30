@@ -2,7 +2,12 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { config } from "./config/index.js";
-import { authRouter, userRouter } from "./routes/index.js";
+import {
+  authRouter,
+  userRouter,
+  problemRouter,
+  roadMapRouter,
+} from "./routes/index.js";
 
 const app = express();
 app.use(express.json());
@@ -22,6 +27,8 @@ app.use(
 // API 라우팅
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/problems", problemRouter);
+app.use("/api/roadmaps", roadMapRouter);
 
 // 헬스체크
 app.get("/health", (_req, res) => res.json({ ok: true }));
