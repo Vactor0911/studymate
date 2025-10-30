@@ -149,7 +149,6 @@ const Header = () => {
             >
               {user ? (
                 <ProfileAvatarButton
-                  name={user.user_id}
                   sx={{
                     width: "50px",
                     height: "50px",
@@ -190,7 +189,6 @@ const Header = () => {
           >
             {user ? (
               <ProfileAvatarButton
-                name={user.user_id}
                 sx={{
                   width: "50px",
                   height: "50px",
