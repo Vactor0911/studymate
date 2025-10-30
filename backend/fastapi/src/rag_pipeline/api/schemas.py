@@ -13,10 +13,6 @@ class CurriculumGenerationRequest(BaseModel):
     # 필수 필드
     student_id: str = Field(..., description="학생 고유 ID")
     subject: str = Field(..., description="학습 과목 (예: '수학', '영어', '과학')")
-    learning_goal: str = Field(
-        ..., 
-        description="학습 목표 (예: '고등학교 수학 대비', '수능 수학 만점')"
-    )
     
     # 선택 필드
     grade: Optional[str] = Field(

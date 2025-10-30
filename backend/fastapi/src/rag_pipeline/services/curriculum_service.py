@@ -53,7 +53,6 @@ class CurriculumService:
         
         user_prompt = prompt_template["user"].format(
             subject=request.subject,
-            learning_goal=request.learning_goal,
             grade=request.grade or "미지정",
             study_duration=request.study_duration or "6개월",
         )
@@ -124,7 +123,6 @@ class CurriculumService:
         query_parts = [
             request.subject,
             request.grade or "",
-            request.learning_goal,
         ]
         query = " ".join(part for part in query_parts if part).strip()
         
