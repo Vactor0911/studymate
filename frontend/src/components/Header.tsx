@@ -12,12 +12,13 @@ import LogoIcon from "/logo.svg";
 import { useLocation, useNavigate } from "react-router";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import PersonIcon from "@mui/icons-material/Person";
-import { useCallback } from "react";
-import { useAtomValue } from "jotai";
+import { useCallback, useEffect, useRef } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
 import { userAtom } from "../states/auth";
 import ProfileAvatarButton from "./ProfileAvatarButton";
 import { logout } from "../services/auth";
 import { useSnackbar } from "notistack";
+import { headerRefAtom } from "../states";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -25,6 +26,15 @@ const Header = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const user = useAtomValue(userAtom);
+  const headerRef = useRef(null);
+  const setHeaderRef = useSetAtom(headerRefAtom);
+
+  // 헤더 Ref 등록
+  useEffect(() => {
+    if (headerRef.current) {
+      setHeaderRef(headerRef);
+    }
+  }, [setHeaderRef]);
 
   // 프로필 버튼 클릭
   const handleProfileButtonClick = useCallback(async () => {
@@ -43,6 +53,7 @@ const Header = () => {
 
   return (
     <AppBar
+      ref={headerRef}
       position="static"
       color="inherit"
       sx={{

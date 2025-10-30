@@ -1,5 +1,6 @@
-import { userAtom } from "../states/auth";
+import { userAtom } from "../../states/auth";
 import { useAtomValue } from "jotai";
+import AuthedMain from "./AuthedMain";
 
 const Main = () => {
   const user = useAtomValue(userAtom);
@@ -7,7 +8,7 @@ const Main = () => {
   if (!user) {
     return <div>로그인 후 이용해주세요.</div>;
   }
-  return <div>Studymate {user.user_id}</div>;
+  return <AuthedMain />;
 };
 
 export default Main;
