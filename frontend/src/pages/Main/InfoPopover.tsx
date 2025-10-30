@@ -4,10 +4,15 @@ import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 interface InfoPopoverProps {
   anchorEl: HTMLDivElement | null;
   setAnchorEl: (value: React.SetStateAction<HTMLDivElement | null>) => void;
+  grade: string;
+  subject: string;
+  focusContent: string;
+  targetContent: string;
 }
 
 const InfoPopover = (props: InfoPopoverProps) => {
-  const { anchorEl, setAnchorEl } = props;
+  const { anchorEl, setAnchorEl, grade, subject, focusContent, targetContent } =
+    props;
 
   const theme = useTheme();
 
@@ -73,7 +78,7 @@ const InfoPopover = (props: InfoPopoverProps) => {
             position="relative"
             zIndex={2}
           >
-            <Typography variant="h6">고등학교 3학년</Typography>
+            <Typography variant="h6">{grade}</Typography>
 
             <Box
               width="6px"
@@ -83,7 +88,7 @@ const InfoPopover = (props: InfoPopoverProps) => {
             />
 
             <Typography variant="h6" color="text.secondary" fontWeight={500}>
-              수학
+              {subject}
             </Typography>
           </Stack>
 
@@ -96,7 +101,7 @@ const InfoPopover = (props: InfoPopoverProps) => {
               <AutoAwesomeRoundedIcon color="primary" />
             </Stack>
             <Typography variant="body1" color="text.secondary">
-              일차방정식
+              {focusContent}
             </Typography>
           </Stack>
 
@@ -106,7 +111,7 @@ const InfoPopover = (props: InfoPopoverProps) => {
               오늘의 목표
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              덧셈, 뺄셈, 곱셈, 어쩌구 저쩌구
+              {targetContent}
             </Typography>
           </Stack>
         </Stack>
