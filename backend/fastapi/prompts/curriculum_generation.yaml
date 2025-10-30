@@ -37,7 +37,7 @@ user: |
      
      [단계 노드 (id=2~6)]
      - 5단계 구조: 입문 → 기초 → 핵심 → 심화 → 고급/응용
-     - category: "subject"
+     - category: "title"
      - 세로형 연결:
        * stage 1 (입문): parent_id = 1
        * stage 2 (기초): parent_id = stage 1 id
@@ -47,7 +47,7 @@ user: |
      
      [주제 노드 (title)]
      - 큰 학습 단위 (예: "일차방정식", "이차함수")
-     - 각 단계(stage) 아래에 위치
+     - 각 단계(subject) 아래에 위치
      
      [스킬 노드 (topic)]
      - 구체적인 학습 내용 (예: "일차방정식 풀이법", "그래프 그리기")
