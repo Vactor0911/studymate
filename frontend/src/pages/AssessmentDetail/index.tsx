@@ -7,7 +7,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import ProgressBar from "./ProgressBar";
+import ProgressBar from "../../components/ProgressBar";
 import AnswerSelect from "./AnswerSelect";
 import { useState } from "react";
 import { useAtomValue } from "jotai";
@@ -41,7 +41,7 @@ const AssessmentDetail = () => {
         >
           {/* 진행도 바 */}
           <ProgressBar total={10} current={3} />
-          
+
           <Container maxWidth="md">
             <Stack gap={5} mt={5}>
               {/* 문제 분류 */}
