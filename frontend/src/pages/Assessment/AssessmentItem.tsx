@@ -83,12 +83,17 @@ const AssessmentItem = (props: AssessmentItemProps) => {
         alignItems="center"
         gap={1}
       >
+        {/* 결과 보기 버튼 */}
         <Button
           variant="outlined"
           sx={{
             p: 0.5,
             px: 1.5,
             borderRadius: 1,
+            "&:hover": {
+              background: theme.palette.primary.main,
+              color: "white",
+            },
           }}
           onClick={() =>
             navigate("result/c770fc8a-df14-4989-9788-be1fc333dfa9")
@@ -96,12 +101,18 @@ const AssessmentItem = (props: AssessmentItemProps) => {
         >
           결과 보기
         </Button>
+
+        {/* 성적표 발급 버튼 */}
         <Button
           variant="outlined"
           sx={{
             p: 0.5,
             px: 1.5,
             borderRadius: 1,
+            "&:hover": {
+              background: theme.palette.primary.main,
+              color: "white",
+            },
           }}
           onClick={() =>
             navigate("/result/2bcb77f4-84be-4776-970c-e3132bbd249e")
