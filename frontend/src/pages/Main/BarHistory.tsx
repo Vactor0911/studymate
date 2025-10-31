@@ -79,7 +79,7 @@ const BarHistory = () => {
       width="100%"
       height="100%"
       alignItems="flex-end"
-      gap="5vw"
+      gap="2vw"
     >
       <BarButton
         label="01"

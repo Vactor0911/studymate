@@ -23,7 +23,7 @@ const AuthedMain = () => {
   return (
     <AuthProtected>
       <Box overflow="hidden">
-        <Container maxWidth="xl">
+        <Container maxWidth="lg">
           <Stack
             height={`calc(100vh - ${headerRef?.current?.clientHeight}px)`}
             py={10}
@@ -76,7 +76,10 @@ const AuthedMain = () => {
               </Box>
 
               {/* 우측 컨테이너 */}
-              <Stack height="100%" justifyContent="space-between">
+              <Stack
+                height="100%"
+                justifyContent="space-between"
+              >
                 {/* 상단 안내 컨테이너 */}
                 <Stack gap={1} mt={3}>
                   {/* 안내 문구 */}

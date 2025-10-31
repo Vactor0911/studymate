@@ -25,7 +25,7 @@ const CurriculumData = [
     createdAt: "2025 / 10 / 30",
     subject: "국어",
     grade: "고등학교 1학년",
-    detail: "현대시의 정의, 특징, 역사를 이해하고 기본 분석 능력을 기른다.",
+    detail: "현대시의 역사를 이해하고 분석 능력을 기른다.",
   },
   {
     uuid: "aa6be864-ebc7-4433-87a9-5e6dacf56e6f",
@@ -63,7 +63,7 @@ const Curriculum = () => {
   }, []);
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="lg">
       <Stack py={15} gap={2}>
         {/* 필터 컨테이너 */}
         <Stack
